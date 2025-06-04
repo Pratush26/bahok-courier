@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Genos, Baumans } from "next/font/google";
+import { Geist, Geist_Mono, Genos, Baumans, Tinos, Leckerli_One } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -26,6 +26,18 @@ const baumans = Baumans({
   weight: "400",
 });
 
+const tinos = Tinos({
+  variable: "--font-tinos",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const leckerliOne = Leckerli_One({
+  variable: "--font-leckerli-one",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Bahok - Courier Service",
   keywords: ["Bahok", "Courier Service", "Delivery", "Shipping", "Track Order"],
@@ -47,7 +59,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${genos.variable} ${baumans.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${genos.variable} ${baumans.variable} ${tinos.variable} ${leckerliOne.variable} antialiased`}
       >
       <Navbar />
         {children}

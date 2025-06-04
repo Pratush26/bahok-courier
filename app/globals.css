@@ -31,3 +31,9 @@ body {
 .fontgenos{
   font-family: var(--font-genos);
 }
+.fonttinos{
+  font-family: var(--font-tinos);
+}
+.fontleckerli{
+  font-family: var(--font-leckerli-one);
+}
