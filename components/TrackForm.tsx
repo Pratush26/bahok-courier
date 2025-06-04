@@ -10,8 +10,6 @@ export default function TrackPage() {
     register,
     handleSubmit,
     reset,
-    setError,
-    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>();
 
