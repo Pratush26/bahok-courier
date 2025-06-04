@@ -1,42 +1,50 @@
 import mongoose from "mongoose";
 
-// Define the type for our cached connection
 interface MongooseCache {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
 }
 
-// Extend the global type to include mongoose
+// Extend the global types
 declare global {
-  var mongoose: MongooseCache | undefined;
+  namespace NodeJS {
+    interface Global {
+      mongooseCache: MongooseCache;
+    }
+  }
+
+  // Needed for TypeScript to recognize `globalThis.mongooseCache`
+  var mongooseCache: MongooseCache | undefined;
 }
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable inside .env");
 }
 
-let cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+const cached: MongooseCache = globalThis.mongooseCache ?? {
+  conn: null,
+  promise: null,
+};
 
-async function connectDB(): Promise<typeof mongoose> {
+globalThis.mongooseCache = cached;
+
+export async function connectDB(): Promise<typeof mongoose> {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI as string, {
+    cached.promise = mongoose.connect(MONGODB_URI, {
       dbName: "bahok-courier",
     });
   }
 
   try {
     cached.conn = await cached.promise;
-  } catch (e) {
+  } catch (error) {
     cached.promise = null;
-    throw e;
+    throw error;
   }
 
-  global.mongoose = cached;
   return cached.conn;
 }
-
-export { connectDB };
