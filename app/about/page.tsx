@@ -30,6 +30,26 @@ const branches: Branch[] = [
     address: "Market Square, Khulna",
     contact: "3344556677, 7788990011",
   },
+  {
+    address: "Downtown, Barisal",
+    contact: "4455667788, 8899001122",
+  },
+  {
+    address: "Central Plaza, Rangpur",
+    contact: "5566778899, 9900112233",
+  },
+  {
+    address: "Near Railway Station, Bogura",
+    contact: "6677889900, 0011223344",
+  },
+  {
+    address: "City Mall, Narayanganj",
+    contact: "7788990011, 1122334455",
+  },
+  {
+    address: "Main Road, Comilla",
+    contact: "8899001122, 2233445566",
+  },
   // Add more branches as needed
 ];
 
