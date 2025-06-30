@@ -16,7 +16,7 @@ export default function Navbar() {
           <Link href="/about" className={`text-white font-semibold hover:text-amber-300 transition-all duration-300 ${pathname === '/about' && 'underline underline-offset-3'}`}>
             About
           </Link>
-          <Link href="/ship" className={`text-white font-semibold hover:text-amber-300 transition-all duration-300 ${pathname === '/service' && 'underline underline-offset-3'}`}>
+          <Link href="/ship" className={`text-white font-semibold hover:text-amber-300 transition-all duration-300 ${pathname === '/ship' && 'underline underline-offset-3'}`}>
             Services
           </Link>
           <Link href="/help" className={`text-white font-semibold hover:text-amber-300 transition-all duration-300 ${pathname === '/help' && 'underline underline-offset-3'}`}>
