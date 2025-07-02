@@ -1,4 +1,3 @@
-// File: app/actions/CreateUser.ts
 'use server';
 
 import connectDB from "@/lib/dbConnect";
@@ -32,8 +31,11 @@ export async function createUser(formData: UserInput) {
     });
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Create user error:", error);
-    return { success: false, message: error.message || "Unknown error" };
+    if (error instanceof Error) {
+      return { success: false, message: error.message };
+    }
+    return { success: false, message: "Unknown error" };
   }
 }
