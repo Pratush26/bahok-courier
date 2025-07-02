@@ -1,10 +1,6 @@
 import RegisterForm from "@/app/duty/components/CreateUser";
-import { notFound } from "next/navigation";
-export default async function RegisterPage() {
-//   const session = await auth();
-//   if (session?.user.role !== "admin") {
-//       notFound(); // ✅ Show 404 without redirecting
-//     }
+
+export default async function RegisterPage() {  
   
   return (
     <main className="flex flex-col justify-center items-center min-h-[80vh]">

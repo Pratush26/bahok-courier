@@ -10,7 +10,7 @@ export default async function Meghlokh() {
         <main className="flex flex-col justify-center items-center min-h-[80vh]">
             <section className="flex items-center justify-center m-6">
                 <Image src={"/user.svg"} width={70} height={70} className="rounded-full" alt="user" />
-                <h1 className="text-xl">{session.user?.name}'s dashboard</h1>
+                <h1 className="text-xl">{session.user?.name}&apos;s dashboard</h1>
 
             </section>
             <section className="flex flex-col sm:flex-row items-baseline justify-center gap-6">
