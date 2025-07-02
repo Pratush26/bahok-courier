@@ -1,36 +1,31 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getToken } from 'next-auth/jwt'
+// middleware.ts
+import { auth } from "@/auth.config";
+import { NextResponse } from "next/server";
 
-const validDutyRoutes = [
-  '/duty',
-  '/duty/handle-order',
-  '/duty/receive-order',
-  // add more valid routes here
-]
+export default auth((req) => {
+  const { pathname } = req.nextUrl;
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
+  // Allow public access to `/` and `/login`
+  const publicRoutes = ["/", "/login"];
+  const isPublic = publicRoutes.includes(pathname);
 
-  if (!pathname.startsWith('/duty')) {
-    return NextResponse.next()
+  // If not authenticated and not on a public route, redirect to `/login`
+  if (!req.auth && !isPublic) {
+    return NextResponse.rewrite(new URL("/not-found", req.url));
   }
-
-  const token = await getToken({
-    req,
-    secret: process.env.AUTH_SECRET, // ✅ Add this line
-  })
-
-  if (!token) {
-    return NextResponse.redirect(new URL('/not-found', req.url))
+  console.log("user authenticated:", req.auth);
+  // Optional: Add role-based logic here if needed later
+  // Example:
+  if (pathname.startsWith("/duty/protected") 
+    && req.auth?.user.role !== "admin"
+  ) {
+    return NextResponse.rewrite(new URL("/not-found", req.url));
   }
+  console.log("user authenticated:", req.auth);
+  return NextResponse.next();
+});
 
-  if (!validDutyRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL('/not-found', req.url))
-  }
-
-  return NextResponse.next()
-}
-
+// Match all routes — apply middleware to everything
 export const config = {
-  matcher: ['/duty', '/duty/:path*'],
-}
+  matcher: ["/duty/:path*"],
+};
