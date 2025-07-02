@@ -1,4 +1,7 @@
+// File: app/actions/CreateUser.ts
 'use server';
+
+export const runtime = "nodejs";
 
 import connectDB from "@/lib/dbConnect";
 import User from "@/models/User";
