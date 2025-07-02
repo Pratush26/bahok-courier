@@ -1,4 +1,4 @@
-
+// auth.config.ts
 import NextAuth from "next-auth";
 
 export const { auth } = NextAuth({

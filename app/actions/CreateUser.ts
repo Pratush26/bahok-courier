@@ -1,8 +1,6 @@
 // File: app/actions/CreateUser.ts
 'use server';
 
-export const runtime = "nodejs";
-
 import connectDB from "@/lib/dbConnect";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
@@ -13,12 +11,9 @@ import { userSchema } from "@/schemas/userSchema";
 type UserInput = z.infer<typeof userSchema>;
 
 export async function createUser(formData: UserInput) {
-
   try {
     await connectDB();
-    // Validate input
     const data = userSchema.parse(formData);
-
 
     const existingUser = await User.findOne({ email: data.email });
     if (existingUser) {
