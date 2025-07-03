@@ -28,6 +28,7 @@ export async function createUser(formData: UserInput) {
       phone: data.phone,
       nid: data.nid,
       role: data.role,
+      dutyPlace: data.dutyPlace,
     });
 
     return { success: true };

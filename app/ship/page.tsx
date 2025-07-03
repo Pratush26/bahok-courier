@@ -1,46 +1,49 @@
-import ShippingForm from "@/components/ShippingForm";
-
+const pricingList = [
+  {
+    productType: "Document",
+    interCity: "60",
+    interDivision: "80",
+    international: "100"
+  },
+  {
+    productType: "Electronics",
+    interCity: "90",
+    interDivision: "120",
+    international: "220"
+  },
+  {
+    productType: "Books",
+    interCity: "60",
+    interDivision: "40",
+    international: "60"
+  }
+];
 export default function Service() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center overflow-hidden">
+    <main className="flex min-h-[80vh] flex-col items-center justify-center overflow-hidden">
       <table className="table-auto border-separate border-spacing-1 border border-gray-800 md:w-3/4 w-11/12 my-4 bg-purple-950 rounded-xl text-center shadow-lg/80 shadow-purple-950">
         <caption className="caption-top font-bold text-4xl m-6 fontgenos">
-          Our Pricing List
+          Our Pricing List <small className="text-nowrap">(per kg)</small>
         </caption>
         <thead>
           <tr>
-            <th className="rounded-lg border border-gray-800 p-2 text-white bg-gray-600/90">Shipping</th>
-            <th className="rounded-lg border border-gray-800 p-2 text-white bg-gray-600/90">1kg charge</th>
-            <th className="rounded-lg border border-gray-800 p-2 text-white bg-gray-600/90">3kg charge</th>
-            <th className="rounded-lg border border-gray-800 p-2 text-white bg-gray-600/90">6kg charge</th>
-            <th className="rounded-lg border border-gray-800 p-2 text-white bg-gray-600/90">10kg charge</th>
+            <th className="rounded-lg border border-gray-800 p-2 text-white bg-gray-600/90">Product Type</th>
+            <th className="rounded-lg border border-gray-800 p-2 text-white bg-gray-600/90">Inter city</th>
+            <th className="rounded-lg border border-gray-800 p-2 text-white bg-gray-600/90">Inter division</th>
+            <th className="rounded-lg border border-gray-800 p-2 text-white bg-gray-600/90">Inter national</th>
           </tr>
         </thead>
         <tbody>
-            <tr className="">
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">Intercity</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-40/=</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-60/=</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-80/=</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-100/=</td>
+          {pricingList.map((item, index) => (
+            <tr key={index}>
+              <td className="rounded-lg border border-gray-800 p-2 bg-white">{item.productType}</td>
+              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT - {item.interCity}/=</td>
+              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT - {item.interDivision}/=</td>
+              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT - {item.international}/=</td>
             </tr>
-            <tr className="">
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">national</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-60/=</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-90/=</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-120/=</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-220/=</td>
-            </tr>
-            <tr className="">
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">international</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-240/=</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-360/=</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-440/=</td>
-              <td className="rounded-lg border border-gray-800 p-2 bg-white">BDT-660/=</td>
-            </tr>
+          ))}
         </tbody>
       </table>
-      <ShippingForm />
     </main>
   );
 }

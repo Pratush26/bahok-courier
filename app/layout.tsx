@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   creator: "Pratush Barua",
   description: "This is a demo courier service website, a project showcasing the use of Next.js, React, and Tailwind CSS. It features a modern design with a focus on user experience, allowing users to track their orders and learn about the services offered.",
   icons: {
-    icon: "/courier-icon.svg",
+    icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
     shortcut: "/favicon-32x32.png",
   },

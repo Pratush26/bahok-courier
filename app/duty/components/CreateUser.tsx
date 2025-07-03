@@ -1,16 +1,30 @@
 "use client";
 
 import { createUser } from "@/app/actions/CreateUser";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
+import Select from "react-select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "@/schemas/userSchema";
 
-type User = z.infer<typeof userSchema>;
+type User = z.infer<typeof userSchema> & {
+};
 
-export default function RegisterForm() {
+type OptionType = {
+    value: string;
+    label: string;
+};
+
+export default function RegisterForm({ branchList }: { branchList: { branch: string }[] }) {
+
+    const placeOptions: OptionType[] = branchList.map((b) => ({
+        value: b.branch,
+        label: b.branch,
+    }));
+
     const {
         register,
+        control,
         handleSubmit,
         reset,
         formState: { errors, isSubmitting },
@@ -65,6 +79,34 @@ export default function RegisterForm() {
                     {errors.role && <p className="text-pink-700 text-sm">{errors.role.message}</p>}
                 </span>
 
+                <Controller
+                    name="dutyPlace"
+                    control={control}
+                    rules={{ required: "Please select one place" }}
+                    render={({ field }) => {
+                        const selectedOption = placeOptions.find((opt) => opt.value === field.value);
+                        return (
+                            <>
+                                <Select
+                                    options={placeOptions}
+                                    isClearable
+                                    placeholder="Select a place..."
+                                    className="text-black w-3/4"
+                                    value={selectedOption || null}
+                                    onChange={(val) => field.onChange(val?.value || "")}
+                                />
+                                {selectedOption && (
+                                    <div className="text-sm">
+                                        Duty Place - <strong>{selectedOption.label}</strong>
+                                    </div>
+                                )}
+                                {errors.dutyPlace && (
+                                    <p className="text-pink-700 text-sm">{errors.dutyPlace.message}</p>
+                                )}
+                            </>
+                        );
+                    }}
+                />
             </section>
             <button type="submit"
                 disabled={isSubmitting}

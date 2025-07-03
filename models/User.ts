@@ -8,6 +8,7 @@ export interface User extends Document {
   phone: number;
   nid: number;
   role: string;
+  dutyPlace: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,7 +19,8 @@ const UserSchema = new Schema<User>({
   password: { type: String, required: true },
   phone: { type: Number, required: true },
   nid: { type: Number, required: true },
-  role: { type: String, default: "employee" }
+  role: { type: String, default: "employee" },
+  dutyPlace: { type: String, required: true },
 }, { timestamps: true });
 
 // Avoid recompilation errors on hot reload (Next.js dev)

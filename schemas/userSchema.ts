@@ -25,4 +25,8 @@ export const userSchema = z.object({
     .string({ required_error: "Role is required" })
     .min(3, "role must be more than 2 characters")
     .max(8, "role must be less than 8 characters"),
+    dutyPlace: z
+    .string({ required_error: "Duty place is required" })
+    .min(3, "role must be more than 2 characters")
+    .max(14, "role must be less than 15 characters"),
 })
