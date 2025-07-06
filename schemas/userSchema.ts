@@ -13,6 +13,10 @@ export const userSchema = z.object({
     .string({ required_error: "Password is required" })
     .min(8, "Password must be more than 8 characters")
     .max(32, "Password must be less than 32 characters"),
+  confirmPassword: z
+    .string({ required_error: "Confirm Password is required" })
+    .min(8, "Password must be more than 8 characters")
+    .max(32, "Password must be less than 32 characters"),
   phone: z
     .string({ required_error: "Phone number is required" })
     .min(11, "Phone number must be more than 8 characters")
@@ -30,3 +34,7 @@ export const userSchema = z.object({
     .min(3, "role must be more than 2 characters")
     .max(14, "role must be less than 15 characters"),
 })
+.refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });

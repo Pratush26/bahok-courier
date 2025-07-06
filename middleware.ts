@@ -14,7 +14,6 @@ export default auth((req) => {
   ) {
     return NextResponse.rewrite(new URL("/not-found", req.url));
   }
-  console.log("user authenticated:", req.auth);
   return NextResponse.next();
 });
 

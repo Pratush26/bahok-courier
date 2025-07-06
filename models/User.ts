@@ -19,7 +19,7 @@ const UserSchema = new Schema<User>({
   password: { type: String, required: true },
   phone: { type: Number, required: true },
   nid: { type: Number, required: true },
-  role: { type: String, default: "employee" },
+  role: { type: String, default: "employee", enum: ["employee","manager","editor","admin"] },
   dutyPlace: { type: String, required: true },
 }, { timestamps: true });
 

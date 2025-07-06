@@ -1,33 +1,15 @@
 import connectDB from "@/lib/dbConnect";
 import BranchModel from "@/models/Branch";
 
-type BranchDetails = {
-  name: string;
-  available: boolean;
-  phone: string[];
-  address: string;
-};
-
-type DivisionBranch = {
-  division: string;
-  branches: BranchDetails[];
-};
-
 export default async function BranchList() {
-  let branchList: DivisionBranch[] = [];
-
+  let BranchList = [];
   try {
     await connectDB();
-    branchList = await BranchModel.find({ "branches.available": true }).lean();
+    BranchList = await BranchModel.find({ available: true }).lean();
   } catch (error) {
-    console.error("Error connecting to the database:", error);
+    console.error("Error fetching branches:", error);
+    return [];
   }
-
-  // Flatten branches with division name
-  const allBranches = branchList.flatMap((doc) =>
-  doc.branches.filter((branch) => branch.available)
-);
-
 return (
     <table className="table-auto border-separate border-spacing-1 border border-gray-800 md:w-3/4 w-11/12 my-4 bg-purple-950 rounded-lg text-center shadow-xl/80 shadow-purple-950">
         <caption className="caption-top font-bold text-4xl m-6 fontgenos">
@@ -42,8 +24,8 @@ return (
           </tr>
         </thead>
         <tbody>
-          {allBranches.length > 0 ? (
-            allBranches.map((branch, index) => (
+          {BranchList.length > 0 ? (
+            BranchList.map((branch, index) => (
               <tr
                 key={`${branch.name}-${index}`}
                 className={index % 2 === 0 ? "bg-white/90 text-gray-700" : "bg-gray-600/80 text-white"}
