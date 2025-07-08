@@ -3,6 +3,7 @@
 import connectDB from "@/lib/dbConnect";
 import ShippingDetailsModel from "@/models/ShippingDetails";
 import { shippingDetailsSchema } from "@/schemas/ShippingSchema";
+import { Types } from "mongoose";
 import { z } from "zod";
 
 // Type derived from schema
@@ -46,8 +47,9 @@ export async function createShipping(formData: UserInput) {
 
     return {
   success: true,
-  trackingId: (newShipping._id as any).toString(),
+  trackingId: (newShipping._id as Types.ObjectId).toString(),
 };
+
   } catch (error: unknown) {
     console.error("Create user error:", error);
     if (error instanceof Error) {

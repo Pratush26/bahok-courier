@@ -130,7 +130,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
 
     const distanceValue = useMemo(() => {
         return distanceType.find(d => d.type === distance)?.value;
-    }, [distance, distanceType, interNational]); // ✅ Correct dependencies
+    }, [distance, distanceType]); // ✅ Correct dependencies
 
     const handleCheckPrice = () => {
         const weightStr = watch("product.0.weight");
@@ -149,7 +149,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
         try {
             const result = await createShipping(data);
             if (result.success) {
-                setTrackingId(result.trackingId); // 👈 Save the ID
+                setTrackingId(result.trackingId ?? null); // 👈 Save the ID
                 reset();
             }
         } catch (err: unknown) {

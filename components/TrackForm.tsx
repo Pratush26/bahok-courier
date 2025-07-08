@@ -15,6 +15,7 @@ export default function TrackPage() {
     if (trackingId) {
       router.push(`/track?trackId=${trackingId}`);
     }
+    reset();
   };
 
   return (

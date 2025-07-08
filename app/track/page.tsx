@@ -1,7 +1,6 @@
 import TrackPage from "@/components/TrackForm";
 import connectDB from "@/lib/dbConnect";
 import ShippingDetailsModel from "@/models/ShippingDetails";
-import { notFound } from "next/navigation";
 
 interface Props {
   searchParams: { trackId?: string };
