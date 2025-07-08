@@ -12,7 +12,7 @@ interface IOrder {
   due?: string;
   charge: number;
   estimatedTime: Date;
-  distanceType: number;
+  distanceType: string;
   approvedBy: string;
 }
 
@@ -46,8 +46,8 @@ export interface IShippingDetails extends Document {
 }
 
 const ProductSchema = new Schema<IProduct>({
-  productType: { type: String, required: true, minlength: 4, maxlength: 8 },
-  desc: { type: String, required: true, minlength: 3, maxlength: 30 },
+  productType: { type: String, required: true, minlength: 4, maxlength: 40 },
+  desc: { type: String, required: true, minlength: 3, maxlength: 50 },
   weight: { type: String, required: true },
   amount: { type: String, required: false },
 });
@@ -57,7 +57,7 @@ const OrderSchema = new Schema<IOrder>({
   due: { type: String, required: false },
   charge: { type: Number, required: true, min: 1 },
   estimatedTime: { type: Date, required: true },
-  distanceType: {type:Number, required: true},
+  distanceType: {type: String, required: true},
   approvedBy: { type: String, required: true },
 });
 
@@ -90,9 +90,8 @@ const ShippingDetailsSchema = new Schema<IShippingDetails>({
   checkPoints: { type: [CheckPointSchema], required: false },
 });
 
-const ShippingDetailsModel: Model<IShippingDetails> = mongoose.model<IShippingDetails>(
-  "ShippingDetails",
-  ShippingDetailsSchema
-);
+const ShippingDetailsModel: Model<IShippingDetails> =
+  mongoose.models.ShippingDetails || mongoose.model<IShippingDetails>("ShippingDetails", ShippingDetailsSchema);
 
 export default ShippingDetailsModel;
+

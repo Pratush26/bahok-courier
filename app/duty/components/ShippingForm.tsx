@@ -7,6 +7,7 @@ import Select, { StylesConfig, GroupBase } from "react-select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { shippingDetailsSchema } from "@/schemas/ShippingSchema";
 import { z } from "zod";
+import { createShipping } from "@/app/actions/ShippingDetails";
 
 type ShippingDetails = z.infer<typeof shippingDetailsSchema>;
 type BranchDetails = {
@@ -58,6 +59,8 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
     const { data: session } = useSession()
     const appover = session?.user.email
     const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
+    const [trackingId, setTrackingId] = useState<string | null>(null);
+
     const [productTypeValue, setProductTypeValue] = useState<number | null>(null);
     const [interNational, setInterNational] = useState(false)
     const {
@@ -112,6 +115,8 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
         if (appover) setValue("order.approvedBy", appover);
         if (distance) {
             setValue("order.distanceType", distance);
+        } else if (interNational) {
+            setValue("order.distanceType", "Overseas");
         }
         if (productTypeValue) console.log("productTypeValue", productTypeValue)
         if (estimatedPrice !== null) {
@@ -119,18 +124,13 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
         }
 
         setValue("order.estimatedTime", new Date(Date.now() + 3 * 24 * 60 * 60 * 1000));
+        setValue("checkPoints", []);
 
-    }, [appover, estimatedPrice, setValue, distance, productTypeValue]);
+    }, [appover, estimatedPrice, setValue, distance, productTypeValue, interNational]);
 
     const distanceValue = useMemo(() => {
         return distanceType.find(d => d.type === distance)?.value;
-    }, [distance, distanceType]); // ✅ Correct dependencies
-
-
-    const onSubmit = (data: ShippingDetails) => {
-        console.log("Form Data:", data);
-        reset();
-    };
+    }, [distance, distanceType, interNational]); // ✅ Correct dependencies
 
     const handleCheckPrice = () => {
         const weightStr = watch("product.0.weight");
@@ -144,9 +144,39 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
             alert("Please enter a valid product weight");
         }
     };
+
+    const onSubmit = async (data: ShippingDetails) => {
+        try {
+            const result = await createShipping(data);
+            if (result.success) {
+                setTrackingId(result.trackingId); // 👈 Save the ID
+                reset();
+            }
+        } catch (err: unknown) {
+            console.error("the error is", err)
+        }
+    };
+
     if (!mount) return null;
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 w-full">
+            {trackingId && (
+                <div className="mt-4 bg-purple-100 p-4 rounded-xl text-purple-900 w-full max-w-md text-center">
+                    <p className="mb-2 font-semibold">✅ Shipping created!</p>
+                    <p className="break-all">
+                        Tracking ID: <span className="font-mono">{trackingId}</span>
+                    </p>
+                    <button
+                        onClick={() => {
+                            navigator.clipboard.writeText(trackingId);
+                            alert("Copied to clipboard!");
+                        }}
+                        className="mt-2 text-sm bg-purple-800 text-white px-3 py-1 rounded hover:bg-purple-900"
+                    >
+                        Copy Tracking ID
+                    </button>
+                </div>
+            )}
             <div className="flex justify-evenly items-center w-full sm:w-1/2 lg:w-1/4">
                 <button type="button" onClick={() => { setInterNational(false) }} className={`${!interNational && 'underline'}`}>National</button>
                 <button type="button" onClick={() => { setInterNational(true) }} className={`${interNational && 'underline'}`}>International</button>
@@ -340,8 +370,8 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
 
                 <button
                     type="submit"
-                    disabled={isSubmitting || estimatedPrice === null}
-                    className="bg-purple-900 px-4 py-2 rounded-xl hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300"
+                    // disabled={isSubmitting || estimatedPrice === null}
+                    className="disabled:bg-gray-700 bg-purple-900 px-4 py-2 rounded-xl hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300"
                 >
                     {isSubmitting ? "Submitting..." : "Submit"}
                 </button>

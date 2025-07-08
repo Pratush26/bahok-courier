@@ -19,31 +19,31 @@ type BranchDetails = {
 };
 
 type OptionType = {
-  label: string;
-  value: string;
+    label: string;
+    value: string;
 };
 
 // Style config typed properly
 const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
-  control: (provided, state) => ({
-    ...provided,
-    backgroundColor: 'white',
-    borderColor: '#D5A5FD',
-    boxShadow: state.isFocused ? '0 0 0 0.1px #D5A5FD' : 'none',
-    '&:hover': {
-      borderColor: '#6b21a8',
-    },
-    borderRadius: '1rem',
-    padding: '0.1rem',
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    backgroundColor: state.isSelected
-      ? '#6b21a8'
-      : state.isFocused
-      ? '#ede9fe'
-      : 'white',
-  }),
+    control: (provided, state) => ({
+        ...provided,
+        backgroundColor: 'white',
+        borderColor: '#D5A5FD',
+        boxShadow: state.isFocused ? '0 0 0 0.1px #D5A5FD' : 'none',
+        '&:hover': {
+            borderColor: '#6b21a8',
+        },
+        borderRadius: '1rem',
+        padding: '0.1rem',
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isSelected
+            ? '#6b21a8'
+            : state.isFocused
+                ? '#ede9fe'
+                : 'white',
+    }),
 };
 
 export default function RegisterForm({ branchList }: { branchList: BranchDetails[] }) {
@@ -76,7 +76,6 @@ export default function RegisterForm({ branchList }: { branchList: BranchDetails
         }
 
         console.log("User created successfully");
-        console.log("Form Data:", data);
 
         reset(); // Reset form after submission
     };
