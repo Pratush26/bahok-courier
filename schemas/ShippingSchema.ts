@@ -44,13 +44,13 @@ export const shippingDetailsSchema = z.object({
 
   product: z.array(
     z.object({
-      productType: z.string().min(4, "Give a valid product type").max(8, "Invalid product type"),
-      desc: z.string().min(3, "Write a bit more").max(30, "Description is too long"),
+      productType: z.string().min(4, "Give a valid product type").max(40, "Invalid product type"),
+      desc: z.string().min(3, "Write a bit more").max(50, "Description is too long"),
       weight: z
         .string()
         .min(1, "Product weight is required")
         .regex(/^\d+(\.\d{1,2})?$/, "Product weight must be a valid number")
-        .max(10, "Product weight is too long"),
+        .max(7, "Product weight is too long"),
       amount: z
         .string()
         .regex(/^\d+(\.\d{1,2})?$/, "Amount must be a valid number")
@@ -63,7 +63,7 @@ export const shippingDetailsSchema = z.object({
     due: z.string().optional(),
     charge: z.number().min(1, "Invalid number"),
     estimatedTime: z.date(),
-    distanceType: z.number().nullable(),
+    distanceType: z.string(),
     approvedBy: z.string().email("Invalid Approver email address"),
   }),
 

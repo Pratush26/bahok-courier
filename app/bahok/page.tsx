@@ -16,10 +16,12 @@ export default async function Meghlokh() {
             <section className="flex flex-col sm:flex-row items-baseline justify-center gap-6">
                 <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/handle-order"}>Checkpoints</Link>
                 <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/ship"}>Ship</Link>
-                {session.user.role === "admin" && 
-                <span className="flex flex-col gap-2">
-                    <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/register"}>Register New</Link>
-                </span>
+                {(session.user.role === "admin" || session.user.role === "editor") &&
+                    <span className="flex flex-col gap-2">
+                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/register"}>
+                            Register New
+                        </Link>
+                    </span>
                 }
                 <form
                     action={async () => {

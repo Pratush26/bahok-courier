@@ -10,7 +10,7 @@ export default auth((req) => {
     return NextResponse.rewrite(new URL("/not-found", req.url));
   }
   if (pathname.startsWith("/duty/protected") 
-    && req.auth?.user.role !== "admin"
+    && req.auth?.user.role !== "admin" && req.auth?.user.role !== "editor"
   ) {
     return NextResponse.rewrite(new URL("/not-found", req.url));
   }

@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import React, { useState, useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
+import Select, { StylesConfig, GroupBase } from "react-select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { shippingDetailsSchema } from "@/schemas/ShippingSchema";
 import { z } from "zod";
@@ -19,14 +19,16 @@ type BranchDetails = {
 type OptionType = {
     value: string;
     label: string;
+    price: number | null,
 };
-type ProductTypeList = {
-    name: string;
+type distanceType = {
+    type: string;
     value: number;
 }
 
-const customStyles = {
-    control: (provided: any, state: any) => ({
+// Style config typed properly
+const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
+    control: (provided, state) => ({
         ...provided,
         backgroundColor: 'white',
         borderColor: '#D5A5FD',
@@ -34,16 +36,20 @@ const customStyles = {
         '&:hover': {
             borderColor: '#6b21a8',
         },
-        borderRadius: '1rem', // rounded-2xl
+        borderRadius: '1rem',
         padding: '0.1rem',
     }),
-    option: (provided: any, state: any) => ({
+    option: (provided, state) => ({
         ...provided,
-        backgroundColor: state.isSelected ? '#6b21a8' : state.isFocused ? '#ede9fe' : 'white',
+        backgroundColor: state.isSelected
+            ? '#6b21a8'
+            : state.isFocused
+                ? '#ede9fe'
+                : 'white',
     }),
 };
 
-export default function ShippingForm({ branchList, ProductTypeList, }: { branchList: BranchDetails[]; ProductTypeList: ProductTypeList[]; }) {
+export default function ShippingForm({ branchList, ProductType, distanceType }: { branchList: BranchDetails[]; ProductType: distanceType[]; distanceType: distanceType[] }) {
 
     const [mount, SetMount] = useState(false)
     useEffect(() => {
@@ -52,6 +58,7 @@ export default function ShippingForm({ branchList, ProductTypeList, }: { branchL
     const { data: session } = useSession()
     let appover = session?.user.email
     const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
+    const [productTypeValue, setProductTypeValue] = useState<number | null>(null);
     const [interNational, setInterNational] = useState(false)
     const {
         register,
@@ -64,69 +71,72 @@ export default function ShippingForm({ branchList, ProductTypeList, }: { branchL
     } = useForm<ShippingDetails>({
         resolver: zodResolver(shippingDetailsSchema),
     });
+
     const placeOptions: OptionType[] = branchList.map((b) => ({
         value: `${b.name}, ${b.division}`,
         label: `${b.name}, ${b.division}`,
+        price: null,
     }));
-    const productTypeOptions: OptionType[] = ProductTypeList.map((b) => ({
-        value: b.name,
-        label: b.name,
+    const productTypeOptions: OptionType[] = ProductType.map((b) => ({
+        value: b.type,
+        label: b.type,
+        price: b.value,
     }));
-    const ptyps = watch("product.0.productType")
-    console.log(ptyps)
+
+    // Extract the watched values first:
+    const sender = watch("senderCity");
+    const receiver = watch("recieverCity");
+
     const distance = useMemo(() => {
-        const sender = watch("senderCity");
-        const receiver = watch("recieverCity");
-
         if (!sender || !receiver) return null;
-        const [senderCity, senderDivision] = sender.split(", ").map(s => s.trim());
-        const [recieverCity, recieverDivision] = receiver.split(", ").map(s => s.trim());
 
-        if (senderDivision === recieverDivision) {
-            if (senderCity === recieverCity) return 0.5;
-            else if (senderDivision === senderCity || senderDivision === recieverCity) return 1;
-            return 1.3;
-        } else if (senderDivision === 'Dhaka' || recieverDivision === 'Dhaka') {
-            if (senderDivision === senderCity && recieverDivision === recieverCity) return 1.7;
-            return 2;
+        const [senderCity, senderDivision] = sender.split(", ").map(s => s.trim());
+        const [receiverCity, receiverDivision] = receiver.split(", ").map(s => s.trim());
+
+        if (senderDivision === receiverDivision) {
+            if (senderCity === receiverCity) return "IntraLocal";
+            else if (senderDivision === senderCity || senderDivision === receiverCity) return "Local";
+            return "IntraDivision";
+        } else if (senderDivision === "Dhaka" || receiverDivision === "Dhaka") {
+            if (senderDivision === senderCity && receiverDivision === receiverCity) return "Capital";
+            return "Remote";
         } else {
-            if (senderDivision === senderCity && recieverDivision === recieverCity) return 2.3;
-            else if (senderDivision === senderCity || recieverDivision === recieverCity) return 2.4;
-            return 2.5;
+            if (senderDivision === senderCity && receiverDivision === receiverCity) return "Divisional";
+            else if (senderDivision === senderCity || receiverDivision === receiverCity) return "InterDivision";
+            return "CrossCapital";
         }
-    }, [watch("senderCity"), watch("recieverCity")]);
+    }, [sender, receiver]);
 
     // ✅ useEffect to set required fields not present in UI
     useEffect(() => {
         if (appover) setValue("order.approvedBy", appover);
         if (distance) {
-            console.log('distance', distance)
-            setValue("order.distanceType", distance)
+            setValue("order.distanceType", distance);
         }
-
+        if (productTypeValue) console.log("productTypeValue", productTypeValue)
         if (estimatedPrice !== null) {
             setValue("order.charge", estimatedPrice);
         }
 
         setValue("order.estimatedTime", new Date(Date.now() + 3 * 24 * 60 * 60 * 1000));
 
-    }, [appover, estimatedPrice, setValue, distance]);
+    }, [appover, estimatedPrice, setValue, distance, productTypeValue]);
 
-
+    const distanceValue = useMemo(() => {
+        return distanceType.find(d => d.type === distance)?.value;
+    },[distance])
 
     const onSubmit = (data: ShippingDetails) => {
         console.log("Form Data:", data);
         reset();
-        // Send to backend API here
     };
 
     const handleCheckPrice = () => {
-        const weightStr = watch("product")?.[0]?.weight ?? "";
+        const weightStr = watch("product.0.weight");
         const weight = parseFloat(weightStr);
 
-        if (!isNaN(weight) && weight > 0) {
-            const ratePerKg = 100; // Change as needed
-            const price = weight * ratePerKg;
+        if (!isNaN(weight) && weight > 0 && productTypeValue && distanceValue) {
+            const price = (weight * productTypeValue + 30) * distanceValue;
             setEstimatedPrice(price);
         } else {
             setEstimatedPrice(null);
@@ -141,7 +151,7 @@ export default function ShippingForm({ branchList, ProductTypeList, }: { branchL
                 <button type="button" onClick={() => { setInterNational(true) }} className={`${interNational && 'underline'}`}>International</button>
             </div>
             <fieldset className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
-            <legend className="my-2 text-xl font-semibold">Sender Information</legend>
+                <legend className="my-2 text-xl font-semibold">Sender Information</legend>
                 <span className="flex flex-col w-full">
                     <input {...register("senderName")} placeholder="Sender Name" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.senderName && <p className="text-pink-700 text-sm">{errors.senderName.message}</p>}
@@ -200,7 +210,7 @@ export default function ShippingForm({ branchList, ProductTypeList, }: { branchL
             </fieldset>
 
             <fieldset className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
-            <legend className="my-2 text-xl font-semibold">Receiver Information</legend>
+                <legend className="my-2 text-xl font-semibold">Receiver Information</legend>
                 <span className="flex flex-col w-full">
                     <input {...register("recieverName")} placeholder="Receiver Name" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.recieverName && <p className="text-pink-700 text-sm">{errors.recieverName.message}</p>}
@@ -260,7 +270,7 @@ export default function ShippingForm({ branchList, ProductTypeList, }: { branchL
             </fieldset>
 
             <fieldset className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
-            <legend className="my-2 text-xl font-semibold">Product Information</legend>
+                <legend className="my-2 text-xl font-semibold">Product Information</legend>
                 <Controller
                     name="product.0.productType"
                     control={control}
@@ -276,7 +286,10 @@ export default function ShippingForm({ branchList, ProductTypeList, }: { branchL
                                     className="w-3/4 text-black"
                                     styles={customStyles}
                                     value={selectedOption || null}
-                                    onChange={(val) => field.onChange(val?.value || "")}
+                                    onChange={(val) => {
+                                        field.onChange(val?.value || "");
+                                        setProductTypeValue(val?.price ?? null); // ⬅️ update price state here
+                                    }}
                                 />
                                 {errors.product?.[0]?.productType && <p className='text-pink-700 text-sm'>{errors.product?.[0]?.productType.message}</p>}
                             </span>

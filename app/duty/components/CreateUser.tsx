@@ -3,7 +3,7 @@
 import { createUser } from "@/app/actions/CreateUser";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
-import Select from "react-select";
+import Select, { StylesConfig, GroupBase } from "react-select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "@/schemas/userSchema";
 import { useEffect, useState } from "react";
@@ -17,27 +17,33 @@ type BranchDetails = {
     phone: string[];
     address: string;
 };
+
 type OptionType = {
-    value: string;
-    label: string;
+  label: string;
+  value: string;
 };
-const customStyles = {
-    control: (provided: any, state: any) => ({
-        ...provided,
-        backgroundColor: 'white',
-        borderColor: '#D5A5FD',
-        boxShadow: state.isFocused ? '0 0 0 0.1px #D5A5FD' : 'none',
-        '&:hover': {
-            borderColor: '#6b21a8',
-        },
-        borderRadius: '1rem', // rounded-2xl
-        padding: '0.1rem',
-    }),
-    option: (provided: any, state: any) => ({
-        ...provided,
-        backgroundColor: state.isSelected ? '#DBB5FA' : state.isFocused ? '#ede9fe' : 'white',
-        color: '#1f2937',
-    }),
+
+// Style config typed properly
+const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
+  control: (provided, state) => ({
+    ...provided,
+    backgroundColor: 'white',
+    borderColor: '#D5A5FD',
+    boxShadow: state.isFocused ? '0 0 0 0.1px #D5A5FD' : 'none',
+    '&:hover': {
+      borderColor: '#6b21a8',
+    },
+    borderRadius: '1rem',
+    padding: '0.1rem',
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected
+      ? '#6b21a8'
+      : state.isFocused
+      ? '#ede9fe'
+      : 'white',
+  }),
 };
 
 export default function RegisterForm({ branchList }: { branchList: BranchDetails[] }) {
@@ -47,7 +53,7 @@ export default function RegisterForm({ branchList }: { branchList: BranchDetails
         SetMount(true);
     }, []);
     const placeOptions: OptionType[] = branchList.map((b) => ({
-        value: b.name,
+        value: `${b.name}, ${b.division}`,
         label: `${b.name}, ${b.division}`,
     }));
 
