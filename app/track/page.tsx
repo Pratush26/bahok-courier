@@ -2,12 +2,12 @@ import TrackPage from "@/components/TrackForm";
 import connectDB from "@/lib/dbConnect";
 import ShippingDetailsModel from "@/models/ShippingDetails";
 
-interface Props {
-  searchParams: { trackId?: string };
+interface PageProps {
+  searchParams: Promise<{ trackId?: string }>;
 }
 
-export default async function Track({ searchParams }: Props) {
-  const trackId = searchParams.trackId;
+export default async function Track({ searchParams }: PageProps) {
+  const { trackId } = await searchParams;  // <-- await here
 
   let order = null;
 
@@ -42,3 +42,4 @@ export default async function Track({ searchParams }: Props) {
     </main>
   );
 }
+
