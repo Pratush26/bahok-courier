@@ -56,7 +56,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
         SetMount(true);
     }, []);
     const { data: session } = useSession()
-    let appover = session?.user.email
+    const appover = session?.user.email
     const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
     const [productTypeValue, setProductTypeValue] = useState<number | null>(null);
     const [interNational, setInterNational] = useState(false)
@@ -124,7 +124,8 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
 
     const distanceValue = useMemo(() => {
         return distanceType.find(d => d.type === distance)?.value;
-    },[distance])
+    }, [distance, distanceType]); // ✅ Correct dependencies
+
 
     const onSubmit = (data: ShippingDetails) => {
         console.log("Form Data:", data);
