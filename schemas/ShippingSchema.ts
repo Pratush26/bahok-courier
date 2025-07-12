@@ -20,21 +20,21 @@ export const shippingDetailsSchema = z.object({
     message: "Invalid country",
   }),
 
-  recieverName: z.string().min(3, "Receiver name must be at least 3 characters"),
-  recieverEmail: z
+  receiverName: z.string().min(3, "Receiver name must be at least 3 characters"),
+  receiverEmail: z
   .union([
     z.string().email("Invalid receiver email address"),
     z.literal("").transform(() => undefined),
   ])
   .optional(),
-  recieverPhone: z
+  receiverPhone: z
     .string()
     .regex(/^01[3-9]\d{8}$/, "Invalid Bangladeshi phone number")
     .min(10, "Receiver phone number is too short")
     .max(15, "Receiver phone number is too long"),
-  recieverAddress: z.string().min(5, "Receiver address is too short"),
-  recieverCity: z.string().min(3, "Receiver city is required"),
-  recieverCountry: z
+  receiverAddress: z.string().min(5, "Receiver address is too short"),
+  receiverCity: z.string().min(3, "Receiver city is required"),
+  receiverCountry: z
   .string()
   .transform((val) => (val.trim() === "" ? undefined : val))
   .optional()
@@ -69,12 +69,12 @@ export const shippingDetailsSchema = z.object({
 
   checkPoints: z.array(
     z.object({
-      RecievingTime: z.date().optional(),
+      ReceivingTime: z.date().optional(),
       place: z.string().min(3, "Place is required").optional(),
       message: z.string().min(3, "Write a bit more").max(30, "Message is too long").optional(),
       secretNote: z.string().min(3, "Write a bit more").max(20, "Secret note is too long").optional(),
       status: z.boolean().default(false).optional(),
-      recievedBy: z.string().email("Invalid Reciever email address").optional(),
+      receivedBy: z.string().email("Invalid receiver email address").optional(),
     })
   ),
 });

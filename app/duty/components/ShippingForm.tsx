@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import React, { useState, useEffect, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import Select, { StylesConfig, GroupBase } from "react-select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { shippingDetailsSchema } from "@/schemas/ShippingSchema";
@@ -73,6 +73,20 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
         setValue
     } = useForm<ShippingDetails>({
         resolver: zodResolver(shippingDetailsSchema),
+        defaultValues: {
+            /** START WITH ONE EMPTY PRODUCT ROW */
+            product: [
+                { productType: "", desc: "", weight: "", amount: "" },
+            ],
+            /** you can prefill order + checkpoints here if you like */
+            order: {
+                approvedBy: "",
+                estimatedTime: new Date(),          // dummy, replace later
+                charge: 0,
+                distanceType: "",
+            },
+            checkPoints: [],
+        },
     });
 
     const placeOptions: OptionType[] = branchList.map((b) => ({
@@ -86,9 +100,18 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
         price: b.value,
     }));
 
+    const {
+        fields: productFields,
+        append: appendProduct,
+        remove: removeProduct,
+    } = useFieldArray({
+        control,
+        name: "product",
+    });
+
     // Extract the watched values first:
     const sender = watch("senderCity");
-    const receiver = watch("recieverCity");
+    const receiver = watch("receiverCity");
 
     const distance = useMemo(() => {
         if (!sender || !receiver) return null;
@@ -133,16 +156,40 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
     }, [distance, distanceType]); // ✅ Correct dependencies
 
     const handleCheckPrice = () => {
-        const weightStr = watch("product.0.weight");
-        const weight = parseFloat(weightStr);
+        const products = watch("product"); // array of products
 
-        if (!isNaN(weight) && weight > 0 && productTypeValue && distanceValue) {
-            const price = (weight * productTypeValue + 30) * distanceValue;
-            setEstimatedPrice(price);
-        } else {
+        if (!products || products.length === 0) {
+            alert("No product data available");
             setEstimatedPrice(null);
-            alert("Please enter a valid product weight");
+            return;
         }
+
+        let total = 0;
+
+        for (const p of products) {
+            const weight = parseFloat(p.weight);
+            const amount = parseFloat(p.amount || ''); // Default to 1 if empty
+
+            const productOption = productTypeOptions.find(opt => opt.value === p.productType);
+            const pricePerKg = productOption?.price ?? null;
+
+            if (!p.productType || isNaN(weight) || weight <= 0 || !pricePerKg || isNaN(amount) || amount <= 0) {
+                alert("Please ensure all products have valid weight, amount, and product type");
+                setEstimatedPrice(null);
+                return;
+            }
+
+            total += weight * pricePerKg * amount;
+        }
+
+        if (!distanceValue || isNaN(distanceValue)) {
+            alert("Please select a valid distance type");
+            setEstimatedPrice(null);
+            return;
+        }
+
+        const estimated = (total + 30) * distanceValue;
+        setEstimatedPrice(estimated);
     };
 
     const onSubmit = async (data: ShippingDetails) => {
@@ -243,35 +290,35 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
             <fieldset className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
                 <legend className="my-2 text-xl font-semibold">Receiver Information</legend>
                 <span className="flex flex-col w-full">
-                    <input {...register("recieverName")} placeholder="Receiver Name" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                    {errors.recieverName && <p className="text-pink-700 text-sm">{errors.recieverName.message}</p>}
+                    <input {...register("receiverName")} placeholder="Receiver Name" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    {errors.receiverName && <p className="text-pink-700 text-sm">{errors.receiverName.message}</p>}
                 </span>
 
                 <span className="flex flex-col w-full">
-                    <input {...register("recieverEmail")} placeholder="Receiver Email" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                    {errors.recieverEmail && <p className="text-pink-700 text-sm">{errors.recieverEmail.message}</p>}
+                    <input {...register("receiverEmail")} placeholder="Receiver Email" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    {errors.receiverEmail && <p className="text-pink-700 text-sm">{errors.receiverEmail.message}</p>}
                 </span>
 
                 <span className="flex flex-col w-full">
-                    <input {...register("recieverPhone")} type="tel" placeholder="Receiver Phone" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                    {errors.recieverPhone && <p className="text-pink-700 text-sm">{errors.recieverPhone.message}</p>}
+                    <input {...register("receiverPhone")} type="tel" placeholder="Receiver Phone" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    {errors.receiverPhone && <p className="text-pink-700 text-sm">{errors.receiverPhone.message}</p>}
                 </span>
 
                 {interNational ?
                     <>
                         <span className="flex flex-col w-full">
-                            <input {...register("recieverCountry")} placeholder="reciever Country" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                            {errors.recieverCountry && <p className="text-pink-700 text-sm">{errors.recieverCountry.message}</p>}
+                            <input {...register("receiverCountry")} placeholder="receiver Country" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                            {errors.receiverCountry && <p className="text-pink-700 text-sm">{errors.receiverCountry.message}</p>}
                         </span>
 
                         <span className="flex flex-col w-full">
-                            <input {...register("recieverCity")} placeholder="reciever City" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                            {errors.recieverCity && <p className="text-pink-700 text-sm">{errors.recieverCity.message}</p>}
+                            <input {...register("receiverCity")} placeholder="receiver City" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                            {errors.receiverCity && <p className="text-pink-700 text-sm">{errors.receiverCity.message}</p>}
                         </span>
                     </>
                     :
                     <Controller
-                        name="recieverCity"
+                        name="receiverCity"
                         control={control}
                         rules={{ required: "Please select one place" }}
                         render={({ field }) => {
@@ -281,13 +328,13 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
                                     <Select
                                         options={placeOptions}
                                         isClearable
-                                        placeholder="Reciever City"
+                                        placeholder="receiver City"
                                         className="w-3/4 text-black"
                                         styles={customStyles}
                                         value={selectedOption || null}
                                         onChange={(val) => field.onChange(val?.value || "")}
                                     />
-                                    {errors.recieverCity && <p className="text-pink-700 text-sm">{errors.recieverCity.message}</p>}
+                                    {errors.receiverCity && <p className="text-pink-700 text-sm">{errors.receiverCity.message}</p>}
                                 </span>
                             );
                         }}
@@ -295,60 +342,115 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
                 }
 
                 <span className="flex flex-col w-full">
-                    <textarea {...register("recieverAddress")} placeholder="Receiver Address" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                    {errors.recieverAddress && <p className="text-pink-700 text-sm">{errors.recieverAddress.message}</p>}
+                    <textarea {...register("receiverAddress")} placeholder="Receiver Address" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    {errors.receiverAddress && <p className="text-pink-700 text-sm">{errors.receiverAddress.message}</p>}
                 </span>
             </fieldset>
 
-            <fieldset className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
-                <legend className="my-2 text-xl font-semibold">Product Information</legend>
-                <Controller
-                    name="product.0.productType"
-                    control={control}
-                    rules={{ required: "Please select one place" }}
-                    render={({ field }) => {
-                        const selectedOption = productTypeOptions.find((opt) => opt.value === field.value);
-                        return (
-                            <span className="flex flex-col w-full">
-                                <Select
-                                    options={productTypeOptions}
-                                    isClearable
-                                    placeholder="Define Product type"
-                                    className="w-3/4 text-black"
-                                    styles={customStyles}
-                                    value={selectedOption || null}
-                                    onChange={(val) => {
-                                        field.onChange(val?.value || "");
-                                        setProductTypeValue(val?.price ?? null); // ⬅️ update price state here
-                                    }}
-                                />
-                                {errors.product?.[0]?.productType && <p className='text-pink-700 text-sm'>{errors.product?.[0]?.productType.message}</p>}
-                            </span>
-                        );
-                    }}
-                />
+            {productFields.map((pf, index) => (
+                <fieldset
+                    key={pf.id}
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-start"
+                >
+                    <legend className="col-span-full my-2 text-xl font-semibold">
+                        Product&nbsp;{index + 1}
+                    </legend>
 
-                <span className="flex flex-col w-full">
-                    <input {...register("product.0.weight")} placeholder="Enter product's Weight in kg" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                    {errors.product?.[0]?.weight && <p className='text-pink-700 text-sm'>{errors.product?.[0]?.weight.message}</p>}
-                </span>
+                    {/* productType with react-select */}
+                    <Controller
+                        name={`product.${index}.productType`}
+                        control={control}
+                        rules={{ required: "Please select one place" }}
+                        render={({ field }) => {
+                            const selectedOption = productTypeOptions.find((opt) => opt.value === field.value);
+                            return (
+                                <span className="flex flex-col w-full">
+                                    <Select
+                                        options={productTypeOptions}
+                                        isClearable
+                                        placeholder="Define Product type"
+                                        className="w-full text-black"
+                                        styles={customStyles}
+                                        value={selectedOption || null}
+                                        onChange={(val) => {
+                                            field.onChange(val?.value || "");
+                                        }}
+                                    />
+                                    {errors.product?.[index]?.productType && <p className='text-pink-700 text-sm'>{errors.product[index]?.productType.message}</p>}
+                                </span>
+                            );
+                        }}
+                    />
 
-                <span className="flex flex-col w-full">
-                    <input {...register("product.0.amount")} placeholder="Enter quantity" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                    {errors.product?.[0]?.amount && <p className='text-pink-700 text-sm'>{errors.product?.[0]?.amount.message}</p>}
-                </span>
+                    {/* weight */}
+                    <div className="flex flex-col w-full">
+                        <input
+                            {...register(`product.${index}.weight`)}
+                            placeholder="Weight (kg)"
+                            className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+                        />
+                        {errors.product?.[index]?.weight && (
+                            <p className="text-pink-700 text-sm">
+                                {errors.product[index]?.weight?.message}
+                            </p>
+                        )}
+                    </div>
 
-                <span className="flex flex-col w-full">
-                    <input {...register("order.due")} placeholder="Enter due amount" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                    {errors.order?.due && <p className='text-pink-700 text-sm'>{errors.order?.due.message}</p>}
-                </span>
+                    {/* amount */}
+                    <div className="flex flex-col w-full">
+                        <input
+                            {...register(`product.${index}.amount`)}
+                            placeholder="Quantity"
+                            className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+                        />
+                        {errors.product?.[index]?.amount && (
+                            <p className="text-pink-700 text-sm">
+                                {errors.product[index]?.amount?.message}
+                            </p>
+                        )}
+                    </div>
 
-                <span className="flex flex-col w-full">
-                    <textarea {...register("product.0.desc")} placeholder="Enter your product description" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
-                    {errors.product?.[0]?.desc && <p className='text-pink-700 text-sm'>{errors.product?.[0]?.desc.message}</p>}
-                </span>
+                    {/* description */}
+                    <div className="flex flex-col w-full">
+                        <textarea
+                            {...register(`product.${index}.desc`)}
+                            placeholder="Description"
+                            className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+                        />
+                        {errors.product?.[index]?.desc && (
+                            <p className="text-pink-700 text-sm">
+                                {errors.product[index]?.desc?.message}
+                            </p>
+                        )}
+                    </div>
 
-            </fieldset>
+                    {/* remove btn */}
+                    {productFields.length > 1 && (
+                        <button
+                            type="button"
+                            onClick={() => removeProduct(index)}
+                            className="text-pink-700 place-self-center"
+                        >
+                            ✕ Remove
+                        </button>
+                    )}
+                </fieldset>
+            ))}
+
+            <button
+                type="button"
+                onClick={() =>
+                    appendProduct({ productType: "", desc: "", weight: "", amount: "" })
+                }
+                className="text-purple-800 underline"
+            >
+                + Add another product
+            </button>
+
+            <span className="flex flex-col w-full sm:w-1/2 lg:w-1/4">
+                <input {...register("order.due")} placeholder="Enter due amount" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                {errors.order?.due && <p className='text-pink-700 text-sm'>{errors.order?.due.message}</p>}
+            </span>
 
 
 

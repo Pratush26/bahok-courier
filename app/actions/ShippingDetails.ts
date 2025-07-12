@@ -25,12 +25,12 @@ export async function createShipping(formData: UserInput) {
       senderCity: data.senderCity,
       senderCountry: data.senderCountry ?? undefined,
 
-      recieverName: data.recieverName,
-      recieverEmail: data.recieverEmail ?? undefined,
-      recieverPhone: data.recieverPhone,
-      recieverAddress: data.recieverAddress,
-      recieverCity: data.recieverCity,
-      recieverCountry: data.recieverCountry ?? undefined,
+      receiverName: data.receiverName,
+      receiverEmail: data.receiverEmail ?? undefined,
+      receiverPhone: data.receiverPhone,
+      receiverAddress: data.receiverAddress,
+      receiverCity: data.receiverCity,
+      receiverCountry: data.receiverCountry ?? undefined,
 
       product: data.product,
 

@@ -17,12 +17,12 @@ interface IOrder {
 }
 
 interface ICheckPoint {
-  RecievingTime?: Date;
+  ReceivingTime?: Date;
   place?: string;
   message?: string;
   secretNote?: string;
   status?: boolean;
-  recievedBy?: string;
+  receivedBy?: string;
 }
 
 export interface IShippingDetails extends Document {
@@ -33,12 +33,12 @@ export interface IShippingDetails extends Document {
   senderCity: string;
   senderCountry?: string;
 
-  recieverName: string;
-  recieverEmail?: string;
-  recieverPhone: string;
-  recieverAddress: string;
-  recieverCity: string;
-  recieverCountry?: string;
+  receiverName: string;
+  receiverEmail?: string;
+  receiverPhone: string;
+  receiverAddress: string;
+  receiverCity: string;
+  receiverCountry?: string;
 
   product: IProduct[];
   order: IOrder;
@@ -62,12 +62,12 @@ const OrderSchema = new Schema<IOrder>({
 });
 
 const CheckPointSchema = new Schema<ICheckPoint>({
-  RecievingTime: { type: Date, required: false },
+  ReceivingTime: { type: Date, required: false },
   place: { type: String, required: false, minlength: 3 },
   message: { type: String, required: false, minlength: 3, maxlength: 30 },
   secretNote: { type: String, required: false, minlength: 3, maxlength: 20 },
   status: { type: Boolean, default: false, required: false },
-  recievedBy: { type: String, required: false },
+  receivedBy: { type: String, required: false },
 });
 
 const ShippingDetailsSchema = new Schema<IShippingDetails>({
@@ -78,12 +78,12 @@ const ShippingDetailsSchema = new Schema<IShippingDetails>({
   senderCity: { type: String, required: true, minlength: 3 },
   senderCountry: { type: String, required: false, minlength: 3 },
 
-  recieverName: { type: String, required: true, minlength: 3 },
-  recieverEmail: { type: String, required: false },
-  recieverPhone: { type: String, required: true },
-  recieverAddress: { type: String, required: true, minlength: 5 },
-  recieverCity: { type: String, required: true, minlength: 3 },
-  recieverCountry: { type: String, required: false, minlength: 3 },
+  receiverName: { type: String, required: true, minlength: 3 },
+  receiverEmail: { type: String, required: false },
+  receiverPhone: { type: String, required: true },
+  receiverAddress: { type: String, required: true, minlength: 5 },
+  receiverCity: { type: String, required: true, minlength: 3 },
+  receiverCountry: { type: String, required: false, minlength: 3 },
 
   product: { type: [ProductSchema], required: true },
   order: { type: OrderSchema, required: true },
