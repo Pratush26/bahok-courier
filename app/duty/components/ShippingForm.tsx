@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { shippingDetailsSchema } from "@/schemas/ShippingSchema";
 import { z } from "zod";
 import { createShipping } from "@/app/actions/ShippingDetails";
+import { getRounds } from "bcryptjs";
 
 type ShippingDetails = z.infer<typeof shippingDetailsSchema>;
 type BranchDetails = {
@@ -60,8 +61,6 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
     const appover = session?.user.email
     const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
     const [trackingId, setTrackingId] = useState<string | null>(null);
-
-    const [productTypeValue, setProductTypeValue] = useState<number | null>(null);
     const [interNational, setInterNational] = useState(false)
     const {
         register,
@@ -141,7 +140,6 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
         } else if (interNational) {
             setValue("order.distanceType", "Overseas");
         }
-        if (productTypeValue) console.log("productTypeValue", productTypeValue)
         if (estimatedPrice !== null) {
             setValue("order.charge", estimatedPrice);
         }
@@ -149,14 +147,14 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
         setValue("order.estimatedTime", new Date(Date.now() + 3 * 24 * 60 * 60 * 1000));
         setValue("checkPoints", []);
 
-    }, [appover, estimatedPrice, setValue, distance, productTypeValue, interNational]);
+    }, [appover, estimatedPrice, setValue, distance, interNational]);
 
     const distanceValue = useMemo(() => {
-        return distanceType.find(d => d.type === distance)?.value;
-    }, [distance, distanceType]); // ✅ Correct dependencies
+        return distanceType.find((d) => d.type === distance)?.value;
+    }, [distance, distanceType]);
 
-    const handleCheckPrice = () => {
-        const products = watch("product"); // array of products
+    const handleCheckPrice = async () => {
+        const products = watch("product");
 
         if (!products || products.length === 0) {
             alert("No product data available");
@@ -168,9 +166,8 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
 
         for (const p of products) {
             const weight = parseFloat(p.weight);
-            const amount = parseFloat(p.amount || ''); // Default to 1 if empty
-
-            const productOption = productTypeOptions.find(opt => opt.value === p.productType);
+            const amount = parseFloat(p.amount || "1"); // Default to 1 if empty or invalid
+            const productOption = productTypeOptions.find((opt) => opt.value === p.productType);
             const pricePerKg = productOption?.price ?? null;
 
             if (!p.productType || isNaN(weight) || weight <= 0 || !pricePerKg || isNaN(amount) || amount <= 0) {
@@ -182,13 +179,41 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
             total += weight * pricePerKg * amount;
         }
 
-        if (!distanceValue || isNaN(distanceValue)) {
+        let FinalDistanceValue: number | null = null;
+
+        if (interNational) {
+            if (!overseasSender || !overseasReceiver) {
+                alert("International sender/receiver location is missing.");
+                return;
+            }
+
+            try {
+                const senderCoords = await getCoordinates(overseasSender);
+                const receiverCoords = await getCoordinates(overseasReceiver);
+
+                if (!senderCoords || !receiverCoords) {
+                    console.error("Missing coordinates");
+                    alert("Could not find locations for international delivery.");
+                    return;
+                }
+
+                const distanceKm = await getDistanceFromORS(senderCoords, receiverCoords);
+                FinalDistanceValue = Math.round(distanceKm/100);
+            } catch (error) {
+                console.error("Failed to calculate international distance:", error);
+                return;
+            }
+        } else {
+            FinalDistanceValue = distanceValue ?? null;
+        }
+
+        if (!FinalDistanceValue || isNaN(FinalDistanceValue)) {
             alert("Please select a valid distance type");
             setEstimatedPrice(null);
             return;
         }
-
-        const estimated = (total + 30) * distanceValue;
+        console.log("distance value is offf cut", FinalDistanceValue)
+        const estimated = (total + 30) * FinalDistanceValue;
         setEstimatedPrice(estimated);
     };
 
@@ -203,6 +228,62 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
             console.error("the error is", err)
         }
     };
+
+    //international distance calculation
+
+    const getCoordinates = async (location: string) => {
+        const response = await fetch(
+            `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}&key=${process.env.NEXT_PUBLIC_GEOCODE_API_KEY}`
+        );
+        const data = await response.json();
+        return data.results?.[0]?.geometry; // { lat, lng }
+    };
+
+    const getDistanceFromORS = async (
+        start: { lat: number; lng: number },
+        end: { lat: number; lng: number }
+    ) => {
+        const response = await fetch(
+            "https://api.openrouteservice.org/v2/directions/driving-car",
+            {
+                method: "POST",
+                headers: {
+                    Authorization: process.env.NEXT_PUBLIC_ORS_API_KEY || "",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    coordinates: [
+                        [start.lng, start.lat], // ORS expects [lng, lat]
+                        [end.lng, end.lat],
+                    ],
+                }),
+            }
+        );
+
+        const data = await response.json();
+        const distanceMeters = data?.routes?.[0]?.summary?.distance;
+        if (!distanceMeters) throw new Error("No distance found");
+
+        return distanceMeters / 1000; // return in km
+    };
+
+
+    const [senderCity, senderCountry] = watch(["senderCity", "senderCountry"]);
+    const [receiverCity, receiverCountry] = watch(["receiverCity", "receiverCountry"]);
+
+    const { overseasSender, overseasReceiver } = useMemo(() => {
+        const allFieldsFilled = senderCity && senderCountry && receiverCity && receiverCountry;
+        if (!allFieldsFilled) return { overseasSender: null, overseasReceiver: null };
+
+        const overseasSender = [senderCity, senderCountry].join(", ");
+        const overseasReceiver = [receiverCity, receiverCountry].join(", ");
+
+        console.log("Sender:", overseasSender, "Receiver:", overseasReceiver);
+
+        return { overseasSender, overseasReceiver };
+    }, [senderCity, senderCountry, receiverCity, receiverCountry]);
+
+
 
     if (!mount) return null;
     return (
