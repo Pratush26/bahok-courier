@@ -64,8 +64,8 @@ const OrderSchema = new Schema<IOrder>({
 const CheckPointSchema = new Schema<ICheckPoint>({
   ReceivingTime: { type: Date, required: false },
   place: { type: String, required: false, minlength: 3 },
-  message: { type: String, required: false, minlength: 3, maxlength: 30 },
-  secretNote: { type: String, required: false, minlength: 3, maxlength: 20 },
+  message: { type: String, required: false, minlength: 3, maxlength: 130 },
+  secretNote: { type: String, required: false, minlength: 3, maxlength: 120 },
   status: { type: Boolean, default: false, required: false },
   receivedBy: { type: String, required: false },
 });

@@ -6,6 +6,7 @@ declare module "next-auth" {
     name: string;
     email: string;
     role?: "user" | "admin" | "employee" | "editor" | "manager";
+    dutyPlace: string;
   }
 
   interface Session {

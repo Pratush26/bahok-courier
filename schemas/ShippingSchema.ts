@@ -71,8 +71,8 @@ export const shippingDetailsSchema = z.object({
     z.object({
       ReceivingTime: z.date().optional(),
       place: z.string().min(3, "Place is required").optional(),
-      message: z.string().min(3, "Write a bit more").max(30, "Message is too long").optional(),
-      secretNote: z.string().min(3, "Write a bit more").max(20, "Secret note is too long").optional(),
+      message: z.string().min(3, "Write a bit more").max(130, "Message is too long").optional(),
+      secretNote: z.string().min(3, "Write a bit more").max(120, "Secret note is too long").optional(),
       status: z.boolean().default(false).optional(),
       receivedBy: z.string().email("Invalid receiver email address").optional(),
     })

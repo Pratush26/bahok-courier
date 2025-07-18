@@ -11,6 +11,7 @@ export const { auth } = NextAuth({
       session.user.name = token.name as string;
       session.user.email = token.email as string;
       session.user.role = (token.role ?? "employee") as "user" | "admin" | "employee";
+      session.user.dutyPlace = token.dutyPlace as string;
       return session;
     },
   },
