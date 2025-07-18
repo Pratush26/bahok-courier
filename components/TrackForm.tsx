@@ -15,14 +15,18 @@ export default function TrackPage({ pageUrl }: { pageUrl: string; }) {
 
   const onSubmit = async (data: FormValues) => {
     const trackingId = data.trackId.trim();
-    {pageUrl === "/duty/checkpoints" &&
-      await AddCheckpoints(data)
+
+    if (pageUrl === "/duty/checkpoints") {
+      await AddCheckpoints(data);
     }
+
     if (trackingId) {
       router.push(`${pageUrl}?trackId=${trackingId}`);
     }
+
     reset();
   };
+
 
   return (
     <section className="flex w-full sm:w-1/2 lg:w-1/3 min-h-screen flex-col items-center justify-center px-6">
@@ -38,14 +42,14 @@ export default function TrackPage({ pageUrl }: { pageUrl: string; }) {
           <p className="text-red-500 text-sm">{errors.trackId.message}</p>
         )}
         {pageUrl === "/duty/checkpoints" &&
-        <>
-          <input
-          type="text"
-          placeholder="Enter tracking number"
-          {...register("message")}
-          className="w-full p-2 border rounded"
-          />
-        </>}
+          <>
+            <input
+              type="text"
+              placeholder="Enter tracking number"
+              {...register("message")}
+              className="w-full p-2 border rounded"
+            />
+          </>}
         <button
           type="submit"
           disabled={isSubmitting}

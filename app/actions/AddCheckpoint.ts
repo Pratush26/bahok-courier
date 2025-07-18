@@ -19,11 +19,20 @@ export default async function AddCheckpoint(data: CheckPoint) {
       await connectDB();
       const order = await ShippingDetailsModel.findById(trackId);
 
-      if (order?.order.distanceType !== "IntraLocal" && order?.checkPoints?.[order.checkPoints.length - 1].place === session?.user.dutyPlace) return null;
-      else if(order) {
+      const lastCheckpoint = order?.checkPoints?.length
+        ? order.checkPoints[order.checkPoints.length - 1]
+        : null;
+
+      if (
+        order?.order.distanceType !== "IntraLocal" &&
+        lastCheckpoint?.place === session?.user.dutyPlace
+      ) {
+        return null;
+      }
+      else if (order) {
         order.checkPoints.push({
           place: session?.user.dutyPlace,
-          message: data.message,
+          message: message,
           ReceivingTime: new Date(),
           receivedBy: session?.user.email,
           status: true,
