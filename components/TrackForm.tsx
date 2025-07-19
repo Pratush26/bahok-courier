@@ -24,9 +24,6 @@ export default function TrackPage({ pageUrl }: { pageUrl: string; }) {
 ) => {
   if (!event) return;
 
-  // Narrow event.currentTarget to HTMLFormElement safely
-  const form = event.currentTarget as HTMLFormElement;
-
   // Cast nativeEvent to SubmitEvent to access submitter
   const submitEvent = event.nativeEvent as unknown as SubmitEvent;
   const button = submitEvent.submitter as HTMLButtonElement | null;
