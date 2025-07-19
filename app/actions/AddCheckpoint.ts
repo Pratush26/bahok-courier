@@ -9,6 +9,14 @@ type CheckPoint = {
   message?: string;
   secretNote?: string;
 };
+type CheckPointType = {
+  place: string;
+  ReceivingTime: Date;
+  status: boolean;
+  receivedBy: string;
+  message?: string;
+  secretNote?: string;
+};
 
 export async function AddCheckpoint(data: CheckPoint) {
   const session = await auth();
@@ -37,7 +45,7 @@ export async function AddCheckpoint(data: CheckPoint) {
       }return null;
     } else {
       // ✅ Create a new checkpoint with only defined fields
-      const newCheckpoint: any = {
+      const newCheckpoint: CheckPointType = {
         place: session.user.dutyPlace,
         ReceivingTime: new Date(),
         status: true,

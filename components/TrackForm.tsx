@@ -18,20 +18,33 @@ export default function TrackPage({ pageUrl }: { pageUrl: string; }) {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormValues>();
   const router = useRouter();
 
-  const handleForm = async (data: FormValues, event: any) => {
-    if (pageUrl === "/duty/checkpoints") {
-      const button = event.nativeEvent.submitter;
-      if (button?.name === "update") {
-        await UpdateCheckpoint(data);
-      } else {
-        await AddCheckpoint(data);
-      }
+  const handleForm = async (
+  data: FormValues,
+  event?: React.BaseSyntheticEvent
+) => {
+  if (!event) return;
+
+  // Narrow event.currentTarget to HTMLFormElement safely
+  const form = event.currentTarget as HTMLFormElement;
+
+  // Cast nativeEvent to SubmitEvent to access submitter
+  const submitEvent = event.nativeEvent as unknown as SubmitEvent;
+  const button = submitEvent.submitter as HTMLButtonElement | null;
+
+  if (pageUrl === "/duty/checkpoints") {
+    if (button?.name === "update") {
+      await UpdateCheckpoint(data);
+    } else {
+      await AddCheckpoint(data);
     }
-    if (data.trackId) {
-      router.push(`${pageUrl}?trackId=${data.trackId}`);
-    }
-    reset();
-  };
+  }
+
+  if (data.trackId) {
+    router.push(`${pageUrl}?trackId=${data.trackId}`);
+  }
+
+  reset();
+};
 
   useEffect(() => {
     setMonunt(true);
