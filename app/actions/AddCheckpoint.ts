@@ -6,43 +6,81 @@ import { auth } from "@/auth";
 
 type CheckPoint = {
   trackId: string;
-  message: string;
+  message?: string;
+  secretNote?: string;
 };
 
-export default async function AddCheckpoint(data: CheckPoint) {
+export async function AddCheckpoint(data: CheckPoint) {
   const session = await auth();
+  const { trackId, message, secretNote } = data;
 
-  const { trackId, message } = data;
+  if (!session || !trackId) return null;
 
-  if (trackId) {
-    try {
-      await connectDB();
-      const order = await ShippingDetailsModel.findById(trackId);
+  try {
+    await connectDB();
+    const order = await ShippingDetailsModel.findById(trackId);
+    if (!order) return null;
 
-      const lastCheckpoint = order?.checkPoints?.length
-        ? order.checkPoints[order.checkPoints.length - 1]
-        : null;
+    const lastCheckpoint = order.checkPoints?.length
+      ? order.checkPoints[order.checkPoints.length - 1]
+      : null;
 
-      if (
-        order?.order.distanceType !== "IntraLocal" &&
-        lastCheckpoint?.place === session?.user.dutyPlace
-      ) {
-        return null;
-      }
-      else if (order) {
-        order.checkPoints.push({
-          place: session?.user.dutyPlace,
-          message: message,
-          ReceivingTime: new Date(),
-          receivedBy: session?.user.email,
-          status: true,
-        });
+    if (lastCheckpoint?.place === session.user.dutyPlace) {
+      if(!lastCheckpoint.status){
+        // ✅ Update only defined fields
+        if (message) lastCheckpoint.message = message;
+        if (secretNote) lastCheckpoint.secretNote = secretNote;
+        lastCheckpoint.ReceivingTime = new Date();
+        lastCheckpoint.receivedBy = session.user.email;
+        lastCheckpoint.status = true;
         await order.save();
-      }
+      }return null;
+    } else {
+      // ✅ Create a new checkpoint with only defined fields
+      const newCheckpoint: any = {
+        place: session.user.dutyPlace,
+        ReceivingTime: new Date(),
+        status: true,
+        receivedBy: session.user.email,
+      };
 
-      console.log("successfully updated");
-    } catch (err) {
-      console.error("Database error:", err);
+      if (message) newCheckpoint.message = message;
+      if (secretNote) newCheckpoint.secretNote = secretNote;
+
+      order.checkPoints.push(newCheckpoint);
+      await order.save();
     }
+
+    console.log("Checkpoint successfully updated or added.");
+  } catch (err) {
+    console.error("Database error:", err);
+  }
+}
+
+export async function UpdateCheckpoint(data: CheckPoint) {
+  const session = await auth();
+  const { trackId, message, secretNote } = data;
+
+  if (!session || !trackId) return null;
+
+  try {
+    await connectDB();
+    const order = await ShippingDetailsModel.findById(trackId);
+    if (!order) return null;
+
+    const lastCheckpoint = order.checkPoints?.length
+      ? order.checkPoints[order.checkPoints.length - 1]
+      : null;
+
+    if (lastCheckpoint?.place === session.user.dutyPlace) {
+        // ✅ Update only defined fields
+        if (message) lastCheckpoint.message = message;
+        if (secretNote) lastCheckpoint.secretNote = secretNote;
+        lastCheckpoint.receivedBy = session.user.email;
+        lastCheckpoint.status = true;
+        await order.save();
+    }
+  } catch (err) {
+    console.error("Database error:", err);
   }
 }

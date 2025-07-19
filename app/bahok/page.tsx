@@ -18,9 +18,8 @@ export default async function Meghlokh() {
                 <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/ship"}>Ship</Link>
                 {(session.user.role === "admin" || session.user.role === "editor") &&
                     <span className="flex flex-col gap-2">
-                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/register"}>
-                            Register New
-                        </Link>
+                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/register"}>Register New</Link>
+                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/edit-user"}>Edit-User</Link>
                     </span>
                 }
                 <form

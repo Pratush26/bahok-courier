@@ -39,10 +39,11 @@ export default async function Track({ searchParams }: PageProps) {
                             <section>
                                 {order.checkPoints?.map((item, index) => {
                                     return (
-                                        <div key={index} className={`${item.status ? "bg-purple-950" : "bg-gray-500"} text-gray-100 my-2 p-4 rounded-2xl`}>
+                                        <div key={index} className={`${item.status ? "bg-purple-950" : "bg-gray-500"} text-gray-200 my-2 p-4 rounded-2xl`}>
                                             <p><b>Reached: </b>{item.place?.toString()}</p>
                                             <p><b>ReceivingTime: </b>{item.ReceivingTime && new Date(item.ReceivingTime).toLocaleString()}</p>
                                             <p>{item.message}</p>
+                                            {!item.status && <p className="text-right italic">upcoming...</p>}
                                         </div>
                                     );
                                 })}
