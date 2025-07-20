@@ -212,7 +212,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
             return;
         }
         console.log("distance value is offf cut", FinalDistanceValue)
-        const estimated = (total + 30) * FinalDistanceValue;
+        const estimated = Math.round((total + 30) * FinalDistanceValue);
         setEstimatedPrice(estimated);
     };
 

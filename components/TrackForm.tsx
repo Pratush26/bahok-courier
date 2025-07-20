@@ -37,7 +37,7 @@ export default function TrackPage({ pageUrl }: { pageUrl: string; }) {
   }
 
   if (data.trackId) {
-    router.push(`${pageUrl}?trackId=${data.trackId}`);
+    router.push(`${pageUrl}?trackId=${data.trackId}#order-details`);
   }
 
   reset();

@@ -26,7 +26,7 @@ export default async function Track({ searchParams }: PageProps) {
         <main className="flex min-h-screen flex-col items-center justify-center">
             <TrackPage pageUrl={"/duty/checkpoints"} />
             {trackId && (
-                <div className="mt-10 w-full max-w-2xl bg-white p-6 rounded shadow">
+                <div id="order-details" className="mt-10 w-full max-w-2xl bg-white p-6 rounded shadow">
                     {order ? (
                         <>
                             <h2 className="text-xl font-bold mb-4">Order Details</h2>
