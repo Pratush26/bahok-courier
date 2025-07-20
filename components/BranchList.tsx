@@ -11,7 +11,7 @@ export default async function BranchList() {
     return [];
   }
 return (
-    <table className="table-auto border-separate border-spacing-1 border border-gray-800 md:w-3/4 w-11/12 my-4 bg-purple-950 rounded-lg text-center shadow-xl/80 shadow-purple-950">
+    <table id="branch-list" className="table-auto border-separate border-spacing-1 border border-gray-800 md:w-3/4 w-11/12 my-4 bg-purple-950 rounded-lg text-center shadow-xl/80 shadow-purple-950">
         <caption className="caption-top font-bold text-4xl m-6 fontgenos">
           Our Branch List
         </caption>
