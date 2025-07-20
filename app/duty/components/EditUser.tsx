@@ -81,7 +81,7 @@ export default function EditUser({
   });
 
   const onSubmit = async (data: User) => {
-    console.log("User created successfully");
+    console.log("User created successfully",data);
     reset();
   };
 
