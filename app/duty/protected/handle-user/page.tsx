@@ -26,12 +26,9 @@ export default async function EditUserPage({ searchParams }: PageProps) {
 
         const rawUser = await User.findOne({ email }).lean();
 
-        if (!rawUser) return <p>User not found</p>;
+        if (!rawUser) return <p className="min-h-screen flex items-center justify-center font-bold text-2xl">User not found</p>;
 
-        // Convert ObjectId and Dates to plain values
-        const { _id, createdAt, updatedAt, ...safeUser } = rawUser;
-        usr = safeUser;
-
+        usr = rawUser;
 
         branchList = (await BranchModel.find({ available: true }).lean()).map((branch) => ({
             ...branch,
