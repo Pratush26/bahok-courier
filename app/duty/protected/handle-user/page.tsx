@@ -12,11 +12,12 @@ type BranchDetails = {
     _id: string;
 };
 
-interface PageProps {
+export default async function EditUserPage({
+    searchParams,
+}: {
     searchParams: { email?: string };
-}
+}) {
 
-export default async function EditUserPage({ searchParams }: PageProps) {
     const { email } = searchParams;
     let branchList: BranchDetails[] = [];
     let usr = null;
