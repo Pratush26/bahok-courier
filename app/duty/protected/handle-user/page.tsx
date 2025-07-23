@@ -12,25 +12,23 @@ type BranchDetails = {
   _id: string;
 };
 
-export default async function EditUserPage({
-  searchParams,
-}: {
-  searchParams?: { email?: string };
-}) {
+interface PageProps {
+  searchParams: Promise<{ email?: string }>;
+}
 
-  const email = typeof searchParams?.email === "string" ? searchParams.email : undefined;
-
-
-  if (!email) {
-    return (
-      <p className="min-h-screen flex items-center justify-center font-bold text-2xl">
-        Email not provided
-      </p>
-    );
-  }
+export default async function EditUserPage({ searchParams }: PageProps) {
 
   let branchList: BranchDetails[] = [];
   let usr = null;
+  const { email } = await searchParams;
+  
+    if (!email) {
+      return (
+        <p className="min-h-screen flex items-center justify-center font-bold text-2xl">
+          Email not provided
+        </p>
+      );
+    }
 
   try {
     await connectDB();
