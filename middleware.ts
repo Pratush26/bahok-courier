@@ -9,11 +9,15 @@ export default auth((req) => {
   if (!req.auth) {
     return NextResponse.rewrite(new URL("/not-found", req.url));
   }
-  if (pathname.startsWith("/duty/protected") 
-    && req.auth?.user.role !== "admin" && req.auth?.user.role !== "editor"
-  ) {
-    return NextResponse.rewrite(new URL("/not-found", req.url));
-  }
+  if (
+  pathname.startsWith("/duty/protected") && !(
+    req.auth?.user.role === "admin" ||
+    req.auth?.user.role === "editor" ||
+    req.auth?.user.role === "manager"
+  )
+) {
+  return NextResponse.rewrite(new URL("/not-found", req.url));
+}
   return NextResponse.next();
 });
 

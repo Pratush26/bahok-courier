@@ -22,6 +22,7 @@ export default async function Meghlokh() {
                         <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/edit-user"}>Edit-User</Link>
                     </span>
                 }
+                <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/change-password"}>Change password</Link>
                 <form
                     action={async () => {
                         "use server"

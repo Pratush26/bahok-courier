@@ -26,9 +26,17 @@ export default async function EditUserPage({ searchParams }: PageProps) {
 
         const rawUser = await User.findOne({ email }).lean();
 
-        if (!rawUser) return <p className="min-h-screen flex items-center justify-center font-bold text-2xl">User not found</p>;
+        if (!rawUser) {
+            return <p className="min-h-screen flex items-center justify-center font-bold text-2xl">User not found</p>;
+        }
 
-        usr = rawUser;
+        usr = {
+            ...rawUser,
+            _id: rawUser._id.toString(),
+            createdAt: rawUser.createdAt?.toISOString(),
+            updatedAt: rawUser.updatedAt?.toISOString(),
+        };
+
 
         branchList = (await BranchModel.find({ available: true }).lean()).map((branch) => ({
             ...branch,

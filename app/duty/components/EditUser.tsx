@@ -1,15 +1,19 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import { useEffect, useState } from "react";
 import type { StylesConfig, GroupBase } from "react-select";
 
 type User = {
+  _id: string;
   email: string;
   phone: number;
   dutyPlace: string;
   role: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 type BranchDetails = {
@@ -55,7 +59,8 @@ export default function EditUser({
   user: User;
 }) {
   const [mount, setMount] = useState(false);
-
+  const { data: session } = useSession();
+  
   useEffect(() => {
     setMount(true);
   }, []);
@@ -153,17 +158,43 @@ export default function EditUser({
         <span className="flex flex-col w-full">
           <label className="block mb-2 font-semibold">Select Role:</label>
           <div className="flex flex-wrap gap-6">
-            {["manager", "admin", "editor", "employee"].map((role) => (
-              <label key={role} className="cursor-pointer">
+              <label className="cursor-pointer">
                 <input
                   {...register("role", { required: true })}
                   type="radio"
-                  value={role}
+                  value={"manager"}
                   className="mr-2"
                 />
-                {role.charAt(0).toUpperCase() + role.slice(1)}
+                manager
               </label>
-            ))}
+              {session?.user?.role === "admin" && (
+                <label className="cursor-pointer">
+                <input
+                  {...register("role", { required: true })}
+                  type="radio"
+                  value={"admin"}
+                  className="mr-2"
+                />
+                admin
+              </label>)}
+              <label className="cursor-pointer">
+                <input
+                  {...register("role", { required: true })}
+                  type="radio"
+                  value={"editor"}
+                  className="mr-2"
+                />
+                editor
+              </label>
+              <label className="cursor-pointer">
+                <input
+                  {...register("role", { required: true })}
+                  type="radio"
+                  value={"employee"}
+                  className="mr-2"
+                />
+                employee
+              </label>
           </div>
           {errors.role && (
             <p className="text-pink-700 text-sm">{errors.role.message}</p>
