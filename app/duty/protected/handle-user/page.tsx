@@ -13,22 +13,13 @@ type BranchDetails = {
 };
 
 interface PageProps {
-  searchParams?: { email?: string };
+    searchParams: { email?: string };
 }
 
 export default async function EditUserPage({ searchParams }: PageProps) {
-  const email = searchParams?.email;
-
-  if (!email) {
-    return (
-      <p className="min-h-screen flex items-center justify-center font-bold text-2xl">
-        Email not provided
-      </p>
-    );
-  }
-
-  let branchList: BranchDetails[] = [];
-  let usr = null;
+    const { email } = searchParams;
+    let branchList: BranchDetails[] = [];
+    let usr = null;
 
   try {
     await connectDB();
