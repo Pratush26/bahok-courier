@@ -31,7 +31,7 @@ export default function FindUser() {
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col items-center justify-center gap-6 w-full md:w-11/12"
+            className="flex flex-col items-center justify-center gap-6 w-11/12 md:w-2/3 lg:w-1/2"
         >
             <span className="flex flex-col w-full">
                 <input
