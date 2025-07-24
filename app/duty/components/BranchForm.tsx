@@ -82,7 +82,7 @@ export default function BranchForm() {
     }, []);
     useEffect(() => {
         setValue("available", isAvailable);
-    }, [isAvailable,setValue]);
+    }, [isAvailable, setValue]);
 
     const placeOptions: OptionType[] = DivisionList.map((b) => ({
         value: b.value,
@@ -179,9 +179,9 @@ export default function BranchForm() {
                             placeholder="Enter Phone number"
                             className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
                         />
-                        {errors.phone?.[index]?.number && (
+                        {errors.phone?.[index]?.number?.message && (
                             <p className="text-pink-700 text-sm">
-                                {(errors.phone?.[index]?.number as any)?.message}
+                                {errors.phone[index].number?.message}
                             </p>
                         )}
                         <button

@@ -18,7 +18,6 @@ export default function TrackPage({ pageUrl }: { pageUrl: string; }) {
   const [monunt, setMonunt] = useState(false)
   const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm<FormValues>();
   const router = useRouter();
-  const scannerRef = useRef<HTMLDivElement>(null);
   const [scannerStarted, setScannerStarted] = useState(false);
   const handleForm = async (
   data: FormValues,
