@@ -1,28 +1,93 @@
-"use client"
+"use client";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <nav className="bg-purple-800 px-6 py-4 flex justify-between items-center overflow-hidden">
+    <nav className="bg-purple-800 px-6 py-4">
+      <div className="flex justify-between items-center">
+        {/* Logo */}
         <Link href="/" className="text-white text-2xl font-bold fontbaumans">
           Bahok
         </Link>
-        <section className="flex justify-center items-center gap-6">
-          <Link href="/track" className={`text-white font-semibold hover:text-amber-300 transition-all duration-300 ${pathname === '/track' && 'underline underline-offset-3'}`}>
-            Track
-          </Link>
-          <Link href="/about" className={`text-white font-semibold hover:text-amber-300 transition-all duration-300 ${pathname === '/about' && 'underline underline-offset-3'}`}>
-            About
-          </Link>
-          <Link href="/ship" className={`text-white font-semibold hover:text-amber-300 transition-all duration-300 ${pathname === '/ship' && 'underline underline-offset-3'}`}>
-            Services
-          </Link>
-          <Link href="/help" className={`text-white font-semibold hover:text-amber-300 transition-all duration-300 ${pathname === '/help' && 'underline underline-offset-3'}`}>
-            Help
-          </Link>
+
+        {/* Desktop Nav */}
+        <section className="hidden sm:flex justify-center items-center gap-6">
+          <NavLinks pathname={pathname} />
         </section>
+
+        {/* Hamburger Icon (Mobile Only) */}
+        <button
+          className="sm:hidden focus:outline-none"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle Menu"
+        >
+          {menuOpen ? (
+            // X icon SVG
+            <Image
+              src="/cross.svg"
+              alt="Close Menu"
+              width={24}
+              height={24}
+              className="dark:invert" />
+          ) : (
+            // Hamburger icon SVG
+            <Image
+              src="/menu.svg"
+              alt="Hamburger Menu"
+              width={24}
+              height={24}
+              className="dark:invert" />
+          )}
+        </button>
+      </div>
+
+      {/* Mobile Nav Dropdown */}
+      {menuOpen && (
+        <section className="sm:hidden flex flex-col mt-3 space-y-2">
+          <NavLinks pathname={pathname} />
+        </section>
+      )}
     </nav>
+  );
+}
+
+function NavLinks({ pathname }: { pathname: string }) {
+  const baseClasses =
+    "text-white font-semibold hover:text-amber-300 transition-all duration-300";
+  const active = "underline underline-offset-4";
+
+  return (
+    <>
+      <Link
+        href="/track"
+        className={`${baseClasses} ${pathname === "/track" ? active : ""}`}
+      >
+        Track
+      </Link>
+      <Link
+        href="/about"
+        className={`${baseClasses} ${pathname === "/about" ? active : ""}`}
+      >
+        About
+      </Link>
+      <Link
+        href="/ship"
+        className={`${baseClasses} ${pathname === "/ship" ? active : ""}`}
+      >
+        Services
+      </Link>
+      <Link
+        href="/help"
+        className={`${baseClasses} ${pathname === "/help" ? active : ""}`}
+      >
+        Help
+      </Link>
+    </>
   );
 }

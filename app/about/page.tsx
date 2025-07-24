@@ -1,5 +1,5 @@
 import Image from "next/image";
-import BranchList from "@/components/BranchList";
+import BranchListData from "@/components/BranchListData";
 import { Suspense } from "react";
 
 export default async function BranchInfo() {
@@ -23,7 +23,7 @@ export default async function BranchInfo() {
         </p>
       </section>
       <Suspense fallback={<div className="flex items-center justify-center w-3/4 h-[70vh] bg-purple-950 animate-pulse rounded-lg my-4">Loading branches...</div>}>
-        <BranchList />
+        <BranchListData />
       </Suspense>
     </main>
   );

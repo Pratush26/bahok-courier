@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useForm, Controller } from "react-hook-form";
+import { deleteUser, UpdateUserData } from "@/app/actions/CreateUser";
 import Select from "react-select";
 import { useEffect, useState } from "react";
 import type { StylesConfig, GroupBase } from "react-select";
@@ -46,8 +47,8 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
     backgroundColor: state.isSelected
       ? "#6b21a8"
       : state.isFocused
-      ? "#ede9fe"
-      : "white",
+        ? "#ede9fe"
+        : "white",
   }),
 };
 
@@ -60,7 +61,8 @@ export default function EditUser({
 }) {
   const [mount, setMount] = useState(false);
   const { data: session } = useSession();
-  
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
   useEffect(() => {
     setMount(true);
   }, []);
@@ -78,6 +80,7 @@ export default function EditUser({
     formState: { errors, isSubmitting },
   } = useForm<User>({
     defaultValues: {
+      _id: user._id,
       email: user.email,
       phone: user.phone,
       dutyPlace: user.dutyPlace,
@@ -85,8 +88,31 @@ export default function EditUser({
     },
   });
 
+  const onDelete = async () => {
+    if (!user.email) {
+      setMessage({ type: "error", text: "Invaild User email." });
+      return;
+    }
+    const result = await deleteUser(user.email);
+    if (!result.success) {
+      setMessage({ type: "error", text: result.message || "Something went wrong." });
+      return;
+    }
+    setMessage({ type: "success", text: result.message || "User is deleted successfully." });
+    reset();
+  };
+
   const onSubmit = async (data: User) => {
-    console.log("User created successfully",data);
+    if (!data._id) {
+      setMessage({ type: "error", text: "Invaild User." });
+      return;
+    }
+    const result = await UpdateUserData(data);
+    if (!result.success) {
+      setMessage({ type: "error", text: result.message || "Something went wrong." });
+      return;
+    }
+    setMessage({ type: "success", text: result.message || "User is deleted successfully." });
     reset();
   };
 
@@ -97,6 +123,14 @@ export default function EditUser({
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col items-center justify-center gap-6 w-full md:w-11/12"
     >
+      {message && (
+        <p
+          className={`text-sm font-medium w-full text-center px-4 py-2 rounded-xl ${message.type === "success" ? "text-green-700 bg-green-100" : "text-red-700 bg-red-100"
+            }`}
+        >
+          {message.text}
+        </p>
+      )}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
         <span className="flex flex-col w-full">
           <input
@@ -158,17 +192,17 @@ export default function EditUser({
         <span className="flex flex-col w-full">
           <label className="block mb-2 font-semibold">Select Role:</label>
           <div className="flex flex-wrap gap-6">
+            <label className="cursor-pointer">
+              <input
+                {...register("role", { required: true })}
+                type="radio"
+                value={"manager"}
+                className="mr-2"
+              />
+              manager
+            </label>
+            {session?.user?.role === "admin" && (
               <label className="cursor-pointer">
-                <input
-                  {...register("role", { required: true })}
-                  type="radio"
-                  value={"manager"}
-                  className="mr-2"
-                />
-                manager
-              </label>
-              {session?.user?.role === "admin" && (
-                <label className="cursor-pointer">
                 <input
                   {...register("role", { required: true })}
                   type="radio"
@@ -177,38 +211,46 @@ export default function EditUser({
                 />
                 admin
               </label>)}
-              <label className="cursor-pointer">
-                <input
-                  {...register("role", { required: true })}
-                  type="radio"
-                  value={"editor"}
-                  className="mr-2"
-                />
-                editor
-              </label>
-              <label className="cursor-pointer">
-                <input
-                  {...register("role", { required: true })}
-                  type="radio"
-                  value={"employee"}
-                  className="mr-2"
-                />
-                employee
-              </label>
+            <label className="cursor-pointer">
+              <input
+                {...register("role", { required: true })}
+                type="radio"
+                value={"editor"}
+                className="mr-2"
+              />
+              editor
+            </label>
+            <label className="cursor-pointer">
+              <input
+                {...register("role", { required: true })}
+                type="radio"
+                value={"employee"}
+                className="mr-2"
+              />
+              employee
+            </label>
           </div>
           {errors.role && (
             <p className="text-pink-700 text-sm">{errors.role.message}</p>
           )}
         </span>
       </section>
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-purple-900 px-4 py-2 rounded-xl text-white font-bold hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300"
-      >
-        {isSubmitting ? "Updating..." : "Update"}
-      </button>
+      <section className="grid grid-cols-2 w-full items-center">
+        <button
+          type="button"
+          onClick={onDelete}
+          className="bg-pink-900 justify-self-start px-4 py-2 rounded-xl text-white font-bold hover:bg-pink-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300"
+        >
+          Delete User
+        </button>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-purple-900 px-4 py-2 rounded-xl text-white font-bold hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300"
+        >
+          {isSubmitting ? "Updating..." : "Update"}
+        </button>
+      </section>
     </form>
   );
 }

@@ -49,6 +49,7 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
 export default function RegisterForm({ branchList }: { branchList: BranchDetails[] }) {
 
     const [mount, SetMount] = useState(false)
+    const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
     useEffect(() => {
         SetMount(true);
     }, []);
@@ -70,18 +71,26 @@ export default function RegisterForm({ branchList }: { branchList: BranchDetails
     const onSubmit = async (data: User) => {
         const result = await createUser(data);
 
-        if (!result.success) {
-            console.error("Error creating user:", result.message);
-            return;
-        }
+         if (!result.success) {
+      setMessage({ type: "error", text: result.message || "Something went wrong." });
+      return;
+    }
 
-        console.log("User created successfully");
-
-        reset(); // Reset form after submission
-    };
+    setMessage({ type: "success", text: result.message || "User created successfully." });
+    reset();
+  };
     if (!mount) return null;
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center justify-center gap-6 w-full md:w-11/12">
+            {message && (
+        <p
+          className={`text-sm font-medium w-full text-center px-4 py-2 rounded-xl ${
+            message.type === "success" ? "text-green-700 bg-green-100" : "text-red-700 bg-red-100"
+          }`}
+        >
+          {message.text}
+        </p>
+      )}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
                 <span className="flex flex-col w-full">
                     <input {...register("name")} placeholder="Enter Name" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
