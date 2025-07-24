@@ -82,7 +82,7 @@ export default function BranchForm() {
     }, []);
     useEffect(() => {
         setValue("available", isAvailable);
-    }, [isAvailable]);
+    }, [isAvailable,setValue]);
 
     const placeOptions: OptionType[] = DivisionList.map((b) => ({
         value: b.value,
