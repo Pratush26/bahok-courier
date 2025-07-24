@@ -5,7 +5,6 @@ import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { userSchema } from "@/schemas/userSchema";
-import { m } from "framer-motion";
 
 // Type derived from schema
 type UserInput = z.infer<typeof userSchema>;
@@ -20,7 +19,7 @@ type UpdatePasswordInput = {
 type UpdateUserDataInput = {
   _id: string;
   email: string;
-  phone: number;
+  phone: string;
   dutyPlace: string;
   role: string;
 }
@@ -103,10 +102,10 @@ export async function UpdateUserData(formData: UpdateUserDataInput) {
     if (!dbUser) {
       return { success: false, message: "User not found!" };
     }
-    if(dbUser.email !== email) dbUser.email = email;
-    if(dbUser.phone !== phone) dbUser.phone = phone;
-    if(dbUser.dutyPlace !== dutyPlace) dbUser.dutyPlace = dutyPlace;
-    if(dbUser.role !== role) dbUser.role = role;
+    if (dbUser.email !== email) dbUser.email = email;
+    if (dbUser.phone !== phone) dbUser.phone = phone;
+    if (dbUser.dutyPlace !== dutyPlace) dbUser.dutyPlace = dutyPlace;
+    if (dbUser.role !== role) dbUser.role = role;
     await dbUser.save();
 
     return { success: true, message: "Password successfully updated" };
@@ -127,7 +126,7 @@ export async function deleteUser(email: string) {
     if (!dbUser) {
       return { success: false, message: "User not found" };
     }
-    await User.deleteOne({email: email});
+    await User.deleteOne({ email: email });
     return { success: true, message: "User deleted successfully" };
   } catch (error: unknown) {
     console.error("Create user error:", error);

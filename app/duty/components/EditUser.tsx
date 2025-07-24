@@ -6,11 +6,12 @@ import { deleteUser, UpdateUserData } from "@/app/actions/CreateUser";
 import Select from "react-select";
 import { useEffect, useState } from "react";
 import type { StylesConfig, GroupBase } from "react-select";
+import { useRouter } from "next/navigation";
 
 type User = {
   _id: string;
   email: string;
-  phone: number;
+  phone: string;
   dutyPlace: string;
   role: string;
   createdAt?: string;
@@ -60,6 +61,7 @@ export default function EditUser({
   user: User;
 }) {
   const [mount, setMount] = useState(false);
+  const router = useRouter();
   const { data: session } = useSession();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -76,7 +78,6 @@ export default function EditUser({
     register,
     control,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<User>({
     defaultValues: {
@@ -99,7 +100,9 @@ export default function EditUser({
       return;
     }
     setMessage({ type: "success", text: result.message || "User is deleted successfully." });
-    reset();
+    setTimeout(() => {
+      router.refresh();
+    }, 1000);
   };
 
   const onSubmit = async (data: User) => {
@@ -113,7 +116,9 @@ export default function EditUser({
       return;
     }
     setMessage({ type: "success", text: result.message || "User is deleted successfully." });
-    reset();
+    setTimeout(() => {
+      router.refresh();
+    }, 1000);
   };
 
   if (!mount) return null;

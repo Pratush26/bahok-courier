@@ -19,6 +19,7 @@ export const userSchema = z.object({
     .max(32, "Password must be less than 32 characters"),
   phone: z
     .string({ required_error: "Phone number is required" })
+    .regex(/^01[3-9]\d{8}$/, "Invalid Bangladeshi phone number")
     .min(11, "Phone number must be more than 8 characters")
     .max(12, "Phone number must be less than 32 characters"),
   nid: z

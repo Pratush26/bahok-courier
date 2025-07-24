@@ -5,8 +5,8 @@ export interface User extends Document {
   name: string;
   email: string;
   password: string;
-  phone: number;
-  nid: number;
+  phone: string;
+  nid: string;
   role: string;
   dutyPlace: string;
   createdAt: Date;
@@ -17,8 +17,8 @@ const UserSchema = new Schema<User>({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true }, // add unique if needed
   password: { type: String, required: true },
-  phone: { type: Number, required: true },
-  nid: { type: Number, required: true },
+  phone: { type: String, required: true },
+  nid: { type: String, required: true },
   role: { type: String, default: "employee", enum: ["employee","manager","editor","admin"] },
   dutyPlace: { type: String, required: true },
 }, { timestamps: true });
