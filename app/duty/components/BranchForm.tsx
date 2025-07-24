@@ -79,7 +79,7 @@ export default function BranchForm() {
 
     useEffect(() => {
         setValue("available", true);
-    }, []);
+    }, [setValue]);
     useEffect(() => {
         setValue("available", isAvailable);
     }, [isAvailable, setValue]);

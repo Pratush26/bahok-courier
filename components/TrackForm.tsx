@@ -2,7 +2,7 @@
 "use client";
 
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { AddCheckpoint, UpdateCheckpoint } from "@/app/actions/AddCheckpoint";
