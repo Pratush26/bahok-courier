@@ -1,6 +1,6 @@
 import FindUser from "../../components/FindUser";
 
-export default async function RegisterPage() {
+export default async function userEditingPage() {
 
   return (
     <main className="flex flex-col justify-center items-center min-h-[80vh]">

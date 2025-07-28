@@ -1,6 +1,6 @@
 "use client";
 
-import { createBranch } from "@/app/actions/CreateBranch";
+import { createBranch, updateBranchData } from "@/app/actions/CreateBranch";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import Select, { StylesConfig, GroupBase } from "react-select";
@@ -9,6 +9,7 @@ import { branchSchema } from "@/schemas/BranchSchema";
 import { useEffect, useState } from "react";
 
 type Branch = z.infer<typeof branchSchema> & {
+    _id?: string;
 };
 
 type OptionType = {
@@ -49,7 +50,7 @@ const DivisionList: OptionType[] = [
     { value: "Rangpur", label: "Rangpur" },
     { value: "Mymensingh", label: "Mymensingh" }
 ];
-export default function BranchForm() {
+export default function BranchForm({ branchData, editable }: { branchData: Branch ; editable?: boolean }) {
 
     const [mount, SetMount] = useState(false)
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -57,12 +58,18 @@ export default function BranchForm() {
     useEffect(() => {
         SetMount(true);
     }, []);
-
-    const defaultValues = isAvailable
+    console.log("Branch Data:", branchData._id);
+    const defaultValues = editable
         ? {
-            phone: [{ number: "" }],
+            _id: branchData._id,
+            division: branchData.division,
+            name: branchData.name,
+            available: branchData.available,
+            phone: branchData.phone.map((phone) => ({ number: typeof phone === "string" ? phone : phone.number })),
+            address: branchData.address,
         }
-        : { // or any fallback you want when not available
+        : { 
+            phone: [{ number: "" }],
         };
 
     const {
@@ -97,15 +104,29 @@ export default function BranchForm() {
         control,
         name: "phone",
     });
-    const onSubmit = async (data: Branch) => {
-        const result = await createBranch(data);
-        if (!result.success) {
-            setMessage({ type: "error", text: result.message || "Something went wrong." });
-            return;
-        }
+    const onSubmit = async (data: Branch, event?: React.BaseSyntheticEvent) => {
+        const submitter = (event?.nativeEvent as SubmitEvent).submitter as HTMLButtonElement;
+        const action = submitter?.value;
 
-        setMessage({ type: "success", text: result.message || "User created successfully." });
-        reset();
+        if (action === "createBranch") {
+            const result = await createBranch(data);
+            if (!result.success) {
+                setMessage({ type: "error", text: result.message || "Something went wrong." });
+                return;
+            }
+            setMessage({ type: "success", text: result.message || "Branch created successfully." });
+            reset();
+        } else if (action === "updateBranch") {
+            data._id = branchData._id;
+            console.log("Updating branch with data:", data);
+            const result = await updateBranchData(data); // You must define this
+            if (!result.success) {
+                setMessage({ type: "error", text: result.message || "Something went wrong." });
+                return;
+            }
+            setMessage({ type: "success", text: result.message || "Branch updated successfully." });
+            reset();
+        }
     };
     if (!mount) return null;
     return (
@@ -202,9 +223,18 @@ export default function BranchForm() {
                 </button>
             </section>
             <button type="submit"
+                name="action"
+                value={"createBranch"}
                 disabled={isSubmitting}
                 className="bg-purple-900 px-4 py-2 rounded-xl text-white font-bold hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300">
-                {isSubmitting ? "Registering..." : "Register"}
+                {isSubmitting ? "Creating..." : "Create Branch"}
+            </button>
+            <button type="submit"
+                name="action"
+                value={"updateBranch"}
+                disabled={isSubmitting}
+                className="bg-purple-900 px-4 py-2 rounded-xl text-white font-bold hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300">
+                {isSubmitting ? "Updating..." : "Update"}
             </button>
         </form>
     );

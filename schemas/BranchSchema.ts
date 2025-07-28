@@ -26,5 +26,5 @@ export const branchSchema = z.object({
     address: z
         .string({ required_error: "Address is required" })
         .min(3, "Address must be more than 2 characters")
-        .max(36, "Address must be less than 37 characters"),
+        .max(56, "Address must be less than 57 characters"),
 })

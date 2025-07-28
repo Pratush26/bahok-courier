@@ -16,13 +16,20 @@ export default async function Meghlokh() {
             <section className="flex flex-col sm:flex-row items-baseline justify-center gap-6">
                 <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/checkpoints"}>Checkpoints</Link>
                 <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/ship"}>Ship</Link>
-                {(session.user.role === "admin" || session.user.role === "editor") &&
-                    <span className="flex flex-col gap-2">
-                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/register"}>Register New</Link>
-                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/edit-user"}>Edit-User</Link>
-                    </span>
-                }
                 <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/change-password"}>Change password</Link>
+                {(session.user.role === "admin" || session.user.role === "editor") &&
+                    <div className="flex flex-col sm:flex-row gap-2">
+                        <span className="flex flex-col gap-2">
+                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/add-branch"}>Add-Branch</Link>
+                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/edit-branch"}>Edit-Branch</Link>
+                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/edit-user"}>Edit-User</Link>
+                        </span>
+                        <span className="flex flex-col gap-2">
+                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/register"}>Notification</Link>
+                        <Link className="hover:text-gray-500 transition-all duration-200 transition-discrete" href={"/duty/protected/register"}>Register New</Link>
+                        </span>
+                    </div>
+                }
                 <form
                     action={async () => {
                         "use server"
