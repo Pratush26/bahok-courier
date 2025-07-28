@@ -10,7 +10,7 @@ export default async function branchEditingPage() {
 
     const branches = await Branch.find({}, { name: 1 }).lean();
 
-    branchList = branches.map((branch: any) => ({
+    branchList = branches.map((branch) => ({
       _id: branch._id.toString(), // Convert ObjectId to string
       name: branch.name,
     }));
