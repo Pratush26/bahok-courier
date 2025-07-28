@@ -50,7 +50,7 @@ const DivisionList: OptionType[] = [
     { value: "Rangpur", label: "Rangpur" },
     { value: "Mymensingh", label: "Mymensingh" }
 ];
-export default function BranchForm({ branchData, editable }: { branchData: Branch ; editable?: boolean }) {
+export default function BranchForm({ branchData, editable }: { branchData: Branch; editable?: boolean }) {
 
     const [mount, SetMount] = useState(false)
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -68,7 +68,7 @@ export default function BranchForm({ branchData, editable }: { branchData: Branc
             phone: branchData.phone.map((phone) => ({ number: typeof phone === "string" ? phone : phone.number })),
             address: branchData.address,
         }
-        : { 
+        : {
             phone: [{ number: "" }],
         };
 
@@ -125,7 +125,6 @@ export default function BranchForm({ branchData, editable }: { branchData: Branc
                 return;
             }
             setMessage({ type: "success", text: result.message || "Branch updated successfully." });
-            reset();
         }
     };
     if (!mount) return null;
@@ -222,20 +221,23 @@ export default function BranchForm({ branchData, editable }: { branchData: Branc
                     + Add Phone
                 </button>
             </section>
-            <button type="submit"
-                name="action"
-                value={"createBranch"}
-                disabled={isSubmitting}
-                className="bg-purple-900 px-4 py-2 rounded-xl text-white font-bold hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300">
-                {isSubmitting ? "Creating..." : "Create Branch"}
-            </button>
-            <button type="submit"
-                name="action"
-                value={"updateBranch"}
-                disabled={isSubmitting}
-                className="bg-purple-900 px-4 py-2 rounded-xl text-white font-bold hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300">
-                {isSubmitting ? "Updating..." : "Update"}
-            </button>
+            {editable ?
+                <button type="submit"
+                    name="action"
+                    value={"updateBranch"}
+                    disabled={isSubmitting}
+                    className="bg-purple-900 px-4 py-2 rounded-xl text-white font-bold hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300">
+                    {isSubmitting ? "Updating..." : "Update"}
+                </button>
+                :
+                <button type="submit"
+                    name="action"
+                    value={"createBranch"}
+                    disabled={isSubmitting}
+                    className="bg-purple-900 px-4 py-2 rounded-xl text-white font-bold hover:bg-purple-950 hover:scale-105 hover:shadow-lg/80 shadow-purple-950 cursor-pointer transition-discrete transition-all duration-300">
+                    {isSubmitting ? "Creating..." : "Create Branch"}
+                </button>
+            }
         </form>
     );
 }

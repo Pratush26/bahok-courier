@@ -6,7 +6,7 @@ type BranchDetails = {
   division: string;
   name: string;
   available: boolean;
-  phone: { number: string }[]; // ✅ Fix here
+  phone: { number: string }[];
   address: string;
   _id: string;
 };
@@ -35,19 +35,10 @@ export default async function BranchFormPage({ searchParams }: PageProps) {
         branchData = {
           ...rawData,
           _id: rawData._id.toString(),
-          phone: rawData.phone.map((p: any) =>
+          phone: rawData.phone.map((p: string) =>
             typeof p === "string" ? { number: p } : p
           ),
         } as BranchDetails;
-
-        // const rawData = await Branch.findOne({ _id }).lean();
-        //       if(rawData){
-        //       branchData = {
-        //         ...rawData,
-        //         _id: rawData._id.toString(),
-        //       } as BranchDetails;
-
-        console.log("Branch Data from add-branch page:", branchData);
       }
     } catch (error) {
       console.error("Error fetching branch data:", error);
