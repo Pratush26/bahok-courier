@@ -3,16 +3,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import ThemeToggle from "./theme";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-purple-800 px-6 py-4">
+    <nav
+      style={{
+        backgroundColor: 'var(--background)',
+        color: 'var(--secground)',
+      }}
+      className="p-4"
+    >
       <div className="flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-white text-2xl font-bold fontbaumans">
+        <Link href="/" className="text-2xl font-bold fontbaumans">
           Bahok
         </Link>
 
@@ -59,7 +66,7 @@ export default function Navbar() {
 
 function NavLinks({ pathname }: { pathname: string }) {
   const baseClasses =
-    "text-white font-semibold hover:text-amber-300 transition-all duration-300";
+    "font-semibold hover:text-gray-600 transition-all duration-300";
   const active = "underline underline-offset-4";
 
   return (
@@ -88,6 +95,7 @@ function NavLinks({ pathname }: { pathname: string }) {
       >
         Help
       </Link>
+      <ThemeToggle />
     </>
   );
 }

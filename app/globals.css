@@ -1,8 +1,10 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fff7ff;
+  --foreground: #6b21a8;
+  --secground: #a087b0;
 }
 
 :root {
@@ -12,12 +14,16 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #fff7ff;
-    --foreground: #6b21a8;
-    --secground: #a087b0;
-  }
+.dark {
+  --background: #0d0017;
+  --foreground: #f1e7f9;
+  --secground: #8c7f96;
+}
+
+.light {
+  --background: #fff7ff;
+  --foreground: #6b21a8;
+  --secground: #400570;
 }
 
 body {
@@ -25,18 +31,26 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-input:focus, textarea:focus{
+p, li{
+  color: var(--secground);
+}
+input:focus,
+textarea:focus {
   outline: 1px solid #6b21a8;
 }
-.fontbaumans{
+
+.fontbaumans {
   font-family: var(--font-baumans);
 }
-.fontgenos{
+
+.fontgenos {
   font-family: var(--font-genos);
 }
-.fonttinos{
+
+.fonttinos {
   font-family: var(--font-tinos);
 }
-.fontleckerli{
+
+.fontleckerli {
   font-family: var(--font-leckerli-one);
 }

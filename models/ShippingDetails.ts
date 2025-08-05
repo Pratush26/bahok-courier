@@ -43,6 +43,8 @@ export interface IShippingDetails extends Document {
   product: IProduct[];
   order: IOrder;
   checkPoints: ICheckPoint[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const ProductSchema = new Schema<IProduct>({
@@ -88,7 +90,7 @@ const ShippingDetailsSchema = new Schema<IShippingDetails>({
   product: { type: [ProductSchema], required: true },
   order: { type: OrderSchema, required: true },
   checkPoints: { type: [CheckPointSchema], required: false },
-});
+}, { timestamps: true });
 
 const ShippingDetailsModel: Model<IShippingDetails> =
   mongoose.models.ShippingDetails || mongoose.model<IShippingDetails>("ShippingDetails", ShippingDetailsSchema);

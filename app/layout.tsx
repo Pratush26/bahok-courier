@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Genos, Baumans, Tinos, Leckerli_One } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
     shortcut: "/favicon-32x32.png",
   },
 };
-
+//suppressHydrationWarning
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -60,10 +61,11 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${genos.variable} ${baumans.variable} ${tinos.variable} ${leckerliOne.variable} antialiased`}
-      >
-      <Navbar />
-        {children}
-        <Footer />
+      ><ThemeProvider attribute={"class"} enableSystem defaultTheme="system">
+          <Navbar />
+          {children}
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

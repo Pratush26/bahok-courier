@@ -1,6 +1,7 @@
 import connectDB from "@/lib/dbConnect";
 import ProductTypeModel from "@/models/ProductType";
 import DistanceTypeModel from "@/models/DistanceType";
+import { GotoTopBtn } from "@/components/GotoTopBtn";
 
 interface ProductType {
   type: string;
@@ -104,6 +105,7 @@ export default async function Service() {
           </dl>
         ))}
       </article>
+      <GotoTopBtn />
     </main>
   );
 }
