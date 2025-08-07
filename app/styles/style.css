@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  --background: #0d0017;
+  --foreground: #f1e7f9;
+  --secground: #a193ac;
+}
+
+.light {
+  --background: #fff7ff;
+  --foreground: #6b21a8;
+  --secground: #400570;
+}
+p, li, dd{
+  color: var(--secground);
+}

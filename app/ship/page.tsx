@@ -2,6 +2,7 @@ import connectDB from "@/lib/dbConnect";
 import ProductTypeModel from "@/models/ProductType";
 import DistanceTypeModel from "@/models/DistanceType";
 import { GotoTopBtn } from "@/components/GotoTopBtn";
+import "@/app/styles/style.css";
 
 interface ProductType {
   type: string;
@@ -32,7 +33,7 @@ export default async function Service() {
     <main className="flex min-h-[80vh] w-full flex-col items-center justify-center">
       <div className="w-full px-2 overflow-x-auto">
         <section className="w-fit mx-auto">
-          <table className="table-auto border-separate border-spacing-1 border border-gray-800 md:w-3/4 w-full my-4 bg-purple-950 rounded-xl text-center shadow-md shadow-purple-950">
+          <table className="table-auto border-separate border-spacing-1 border border-gray-800 md:w-3/4 w-full my-4 bg-purple-950 dark:bg-purple-950/80 rounded-xl text-center shadow-md shadow-purple-950">
             <caption className="caption-top font-bold text-2xl sm:text-4xl m-6 fontgenos">
               <h1>
                 Our Pricing List <small className="text-nowrap">(per kg in BDT)</small>
@@ -46,7 +47,7 @@ export default async function Service() {
                 {DistanceType.map((item, index) => (
                   <th
                     key={index}
-                    className="rounded-lg border border-gray-800 p-4 text-white bg-gray-600/90"
+                    className="rounded-lg border border-gray-800 p-4 text-white bg-gray-600/90 dark:bg-gray-700"
                   >
                     {item.type}
                   </th>
@@ -62,7 +63,7 @@ export default async function Service() {
                   {DistanceType.map((distance, i) => (
                     <td
                       key={i}
-                      className="rounded-lg border border-gray-800 p-4 bg-white hover:bg-purple-800 hover:text-gray-100"
+                      className="rounded-lg border border-gray-800 p-4 bg-white dark:bg-gray-900/90 dark:text-gray-200 hover:bg-purple-800 hover:text-gray-100"
                     >
                       {Math.round((item.value + 30) * distance.value)}/=
                     </td>
@@ -75,7 +76,7 @@ export default async function Service() {
                   </td>
                   <td
                     colSpan={8}
-                    className="rounded-lg border border-gray-800 p-4 bg-white hover:bg-purple-800 hover:text-gray-100"
+                    className="rounded-lg border border-gray-800 p-4 bg-white dark:bg-gray-900/90 dark:text-gray-200 hover:bg-purple-800 hover:text-gray-100"
                   >
                     Undefined
                   </td>

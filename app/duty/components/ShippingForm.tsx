@@ -47,6 +47,11 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
             : state.isFocused
                 ? '#ede9fe'
                 : 'white',
+        color: state.isSelected ? 'white' : 'black',
+    }),
+    placeholder: (provided) => ({
+        ...provided,
+        color: '#b490d3', // Customize this
     }),
 };
 
@@ -311,28 +316,28 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
             <fieldset className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
                 <legend className="my-2 text-xl font-semibold">Sender Information</legend>
                 <span className="flex flex-col w-full">
-                    <input {...register("senderName")} placeholder="Sender Name" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <input {...register("senderName")} placeholder="Sender Name" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.senderName && <p className="text-pink-700 text-sm">{errors.senderName.message}</p>}
                 </span>
 
                 <span className="flex flex-col w-full">
-                    <input {...register("senderEmail")} placeholder="Sender Email" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <input {...register("senderEmail")} placeholder="Sender Email" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.senderEmail && <p className="text-pink-700 text-sm">{errors.senderEmail.message}</p>}
                 </span>
 
                 <span className="flex flex-col w-full">
-                    <input {...register("senderPhone")} type="tel" placeholder="Sender Phone" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <input {...register("senderPhone")} type="tel" placeholder="Sender Phone" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.senderPhone && <p className="text-pink-700 text-sm">{errors.senderPhone.message}</p>}
                 </span>
                 {interNational ?
                     <>
                         <span className="flex flex-col w-full">
-                            <input {...register("senderCountry")} placeholder="Sender Country" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                            <input {...register("senderCountry")} placeholder="Sender Country" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                             {errors.senderCountry && <p className="text-pink-700 text-sm">{errors.senderCountry.message}</p>}
                         </span>
 
                         <span className="flex flex-col w-full">
-                            <input {...register("senderCity")} placeholder="Sender City" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                            <input {...register("senderCity")} placeholder="Sender City" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                             {errors.senderCity && <p className="text-pink-700 text-sm">{errors.senderCity.message}</p>}
                         </span>
                     </>
@@ -362,7 +367,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
                 }
 
                 <span className="flex flex-col w-full">
-                    <textarea {...register("senderAddress")} placeholder="Sender Address" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <textarea {...register("senderAddress")} placeholder="Sender Address" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.senderAddress && <p className="text-pink-700 text-sm">{errors.senderAddress.message}</p>}
                 </span>
             </fieldset>
@@ -370,29 +375,29 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
             <fieldset className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
                 <legend className="my-2 text-xl font-semibold">Receiver Information</legend>
                 <span className="flex flex-col w-full">
-                    <input {...register("receiverName")} placeholder="Receiver Name" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <input {...register("receiverName")} placeholder="Receiver Name" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.receiverName && <p className="text-pink-700 text-sm">{errors.receiverName.message}</p>}
                 </span>
 
                 <span className="flex flex-col w-full">
-                    <input {...register("receiverEmail")} placeholder="Receiver Email" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <input {...register("receiverEmail")} placeholder="Receiver Email" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.receiverEmail && <p className="text-pink-700 text-sm">{errors.receiverEmail.message}</p>}
                 </span>
 
                 <span className="flex flex-col w-full">
-                    <input {...register("receiverPhone")} type="tel" placeholder="Receiver Phone" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <input {...register("receiverPhone")} type="tel" placeholder="Receiver Phone" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.receiverPhone && <p className="text-pink-700 text-sm">{errors.receiverPhone.message}</p>}
                 </span>
 
                 {interNational ?
                     <>
                         <span className="flex flex-col w-full">
-                            <input {...register("receiverCountry")} placeholder="receiver Country" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                            <input {...register("receiverCountry")} placeholder="receiver Country" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                             {errors.receiverCountry && <p className="text-pink-700 text-sm">{errors.receiverCountry.message}</p>}
                         </span>
 
                         <span className="flex flex-col w-full">
-                            <input {...register("receiverCity")} placeholder="receiver City" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                            <input {...register("receiverCity")} placeholder="receiver City" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                             {errors.receiverCity && <p className="text-pink-700 text-sm">{errors.receiverCity.message}</p>}
                         </span>
                     </>
@@ -422,7 +427,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
                 }
 
                 <span className="flex flex-col w-full">
-                    <textarea {...register("receiverAddress")} placeholder="Receiver Address" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <textarea {...register("receiverAddress")} placeholder="Receiver Address" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.receiverAddress && <p className="text-pink-700 text-sm">{errors.receiverAddress.message}</p>}
                 </span>
             </fieldset>
@@ -467,7 +472,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
                         <input
                             {...register(`product.${index}.weight`)}
                             placeholder="Weight (kg)"
-                            className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+                            className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full"
                         />
                         {errors.product?.[index]?.weight && (
                             <p className="text-pink-700 text-sm">
@@ -481,7 +486,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
                         <input
                             {...register(`product.${index}.amount`)}
                             placeholder="Quantity"
-                            className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+                            className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full"
                         />
                         {errors.product?.[index]?.amount && (
                             <p className="text-pink-700 text-sm">
@@ -495,7 +500,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
                         <textarea
                             {...register(`product.${index}.desc`)}
                             placeholder="Description"
-                            className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+                            className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full"
                         />
                         {errors.product?.[index]?.desc && (
                             <p className="text-pink-700 text-sm">
@@ -528,7 +533,7 @@ export default function ShippingForm({ branchList, ProductType, distanceType }: 
             </button>
 
             <span className="flex flex-col w-full sm:w-1/2 lg:w-1/4">
-                <input {...register("order.due")} placeholder="Enter due amount" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                <input {...register("order.due")} placeholder="Enter due amount" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                 {errors.order?.due && <p className='text-pink-700 text-sm'>{errors.order?.due.message}</p>}
             </span>
 

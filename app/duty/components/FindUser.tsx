@@ -38,7 +38,7 @@ export default function FindUser() {
                     type="email"
                     {...register("email", { required: "Email is required" })}
                     placeholder="Enter Email"
-                    className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+                    className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full"
                 />
                 {errors.email && (
                     <p className="text-pink-700 text-sm">{errors.email.message}</p>

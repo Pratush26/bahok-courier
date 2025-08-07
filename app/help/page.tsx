@@ -13,15 +13,15 @@ export default function Help() {
             <section className="flex flex-col items-center justify-center gap-4 w-5/6 mx-auto lg:w-1/2">
                 <h1 className="text-4xl text-center font-bold fontgenos">Contact to our customer service</h1>
                 <p className="font-medium text-center">For any queries or support, please reach out to us:</p>
-                <ul className="list-disc list-inside">
+                <ul className="list-disc list-inside space-y-2">
                     <li>Phone: 032435843907</li>
                     <li>Email:bahok@2dhfgmail.com</li>
                     <li>
                         You can access our every branch if you face any branch related quaries or need to contact any of our branch.<br />
+                    </li>
                         <a href="/about#branch-list" className="underline hover:text-gray-600 transition-colors duration-300">
                             Click here to get the branch details
                         </a>
-                    </li>
 
                 </ul>
             </section>

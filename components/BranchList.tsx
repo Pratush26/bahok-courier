@@ -53,7 +53,7 @@ export default function BranchList({ BranchData }: { BranchData: BranchDataType[
             filteredDocs.map((branch, index) => (
               <tr
                 key={`${branch.name}-${index}`}
-                className={index % 2 === 0 ? "bg-white/90 text-gray-700" : "bg-gray-600/80 text-white"}
+                className={index % 2 === 0 ? "bg-white/90 dark:bg-white/80 text-gray-700" : "bg-gray-600/80 text-white"}
               >
                 <td className="border border-gray-800 p-2 hidden sm:table-cell">{index + 1}</td>
                 <td className="border border-gray-800 p-2">{branch.name}</td>

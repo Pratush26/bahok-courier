@@ -1,4 +1,5 @@
 import Link from "next/link";
+import "@/app/styles/style.css";
 
 export default function TermsPage() {
     return (

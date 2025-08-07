@@ -11,6 +11,7 @@ export default function Home() {
         </span>
         <Image
           src="/delivery-man.png"
+          loading="eager"
           alt="Next.js Logo"
           width={400}
           height={400}

@@ -140,7 +140,7 @@ export default function BranchForm({ branchData, editable }: { branchData: Branc
             )}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-center justify-items-center">
                 <span className="flex flex-col w-full">
-                    <input {...register("name")} placeholder="Enter Branch Name" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <input {...register("name")} placeholder="Enter Branch Name" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.name && <p className="text-pink-700 text-sm">{errors.name.message}</p>}
                 </span>
 
@@ -187,7 +187,7 @@ export default function BranchForm({ branchData, editable }: { branchData: Branc
                 </span>
 
                 <span className="flex flex-col w-full">
-                    <textarea {...register("address")} placeholder="Enter Address" className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full" />
+                    <textarea {...register("address")} placeholder="Enter Address" className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full" />
                     {errors.address && <p className="text-pink-700 text-sm">{errors.address.message}</p>}
                 </span>
 
@@ -197,7 +197,7 @@ export default function BranchForm({ branchData, editable }: { branchData: Branc
                             {...register(`phone.${index}.number` as const)}
                             type="tel"
                             placeholder="Enter Phone number"
-                            className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+                            className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full"
                         />
                         {errors.phone?.[index]?.number?.message && (
                             <p className="text-pink-700 text-sm">

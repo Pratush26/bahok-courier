@@ -113,7 +113,7 @@ export default function TrackPage({ pageUrl }: { pageUrl: string; }) {
               type="submit"
               name="update"
               disabled={isSubmitting}
-              className="w-1/2 bg-purple-700 text-white font-bold py-2 rounded hover:bg-purple-800 transition-colors duration-300"
+              className="w-1/2 bg-purple-700 dark:bg-purple-900 text-white font-bold py-2 rounded hover:bg-purple-800 transition-colors duration-300"
             >
               Update
             </button>
@@ -122,7 +122,7 @@ export default function TrackPage({ pageUrl }: { pageUrl: string; }) {
             type="submit"
             name="submit"
             disabled={isSubmitting}
-            className="w-full cursor-pointer bg-purple-700 text-white font-bold py-2 rounded hover:bg-purple-800 transition-colors duration-300"
+            className="w-full cursor-pointer bg-purple-700 dark:bg-purple-900 text-white font-bold py-2 rounded hover:bg-purple-800 transition-colors duration-300"
           >
             Submit
           </button>

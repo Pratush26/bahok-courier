@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { auth, signOut } from "@/auth"
 import LoginPage from "@/components/LogInForm";
+import "@/app/styles/style.css";
 
 export default async function Meghlokh() {
     const session = await auth()

@@ -29,8 +29,14 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
             : state.isFocused
                 ? '#ede9fe'
                 : 'white',
+        color: state.isSelected ? 'white' : 'black',
+    }),
+    placeholder: (provided) => ({
+        ...provided,
+        color: '#b490d3', // Customize this
     }),
 };
+
 
 export default function FindBranch({ branchName }: { branchName: { _id:string; name: string }[] }) {
     const [mount, setMount] = useState(false);

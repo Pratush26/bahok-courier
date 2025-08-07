@@ -76,7 +76,7 @@ export default function PasswordManager() {
           {...register("Oldpassword", { required: "Old password is required" })}
           type="password"
           placeholder="Enter old password"
-          className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+          className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full"
         />
         {errors.Oldpassword && (
           <p className="text-pink-700 text-sm">{errors.Oldpassword.message}</p>
@@ -92,7 +92,7 @@ export default function PasswordManager() {
           })}
           type="password"
           placeholder="Enter new password"
-          className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+          className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full"
         />
         {errors.password && (
           <p className="text-pink-700 text-sm">{errors.password.message}</p>
@@ -109,7 +109,7 @@ export default function PasswordManager() {
           })}
           type="password"
           placeholder="Retype new password"
-          className="bg-white border border-purple-300 px-4 py-2 rounded-2xl w-full"
+          className="bg-white dark:bg-gray-950 border border-purple-300 px-4 py-2 rounded-2xl w-full"
         />
         {errors.confirmPassword && (
           <p className="text-pink-700 text-sm">
