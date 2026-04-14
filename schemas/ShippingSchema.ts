@@ -1,5 +1,4 @@
 // schemas/shippingDetailsSchema.ts
-import { distance } from "framer-motion";
 import { z } from "zod";
 
 export const shippingDetailsSchema = z.object({
